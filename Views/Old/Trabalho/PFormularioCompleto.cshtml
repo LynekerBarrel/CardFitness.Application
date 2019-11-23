@@ -1,0 +1,107 @@
+﻿@model AdmSimposio.Models.Trabalho
+
+
+<script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="~/js/SimposioValidate.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#ArquivoCompleto").fileinput({
+            'showUpload': false,
+            'showPreview': false,
+            initialCaption: '@Html.Raw((string)ViewBag.NomeArquivoCompleto)'
+        });
+    });
+
+
+    @*var NomeArquivoCompleto = '@Html.Raw((string)ViewBag.NomeArquivoCompleto)';
+
+     var urlArquivoBanner = '@Html.Raw((string)ViewBag.urlArquivoBanner)';
+    var nomeArquivoBanner = '@Html.Raw((string)ViewBag.nomeArquivoBanner)';*@
+</script>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="view-titulo-tab line-bottom">
+            <div class="pull-left">
+                <h4>Formulário</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label asp-for="Titulo" class="control-label">Título*</label>
+            <input asp-for="Titulo" onblur="textCounter(this, 'counterTitulo', 200);" onkeyup="textCounter(this, 'counterTitulo', 200);" class="form-control obrigatorio" type="text" />
+            @*<p style="color:#808080" id="counterTitulo">Caracteres Restantes: <b>@(200 - Model.Titulo.Length)</b></p>*@
+            <p style="color:#808080" id="counterTitulo">
+                Caracteres Restantes: <b>
+                    @if (!String.IsNullOrEmpty(Model.Titulo))
+                    {
+                        <span>
+                            @(200 - Model.Titulo.Length)
+                        </span>
+                    }
+                    else
+                    {
+                        <span>200</span>
+                    }
+                </b>
+            </p>
+        </div>
+        <div class="form-group">
+            <label asp-for="PalavraChave" class="control-label">Palavras Chave*</label>
+            @*<input asp-for="PalavraChave" onkeyup="textCounter(this, 'counterPalavraChave', 150);" class="form-control obrigatorio" type="text" />*@
+            <input asp-for="PalavraChave" onblur="textCounter(this, 'counterPalavraChave', 150);" onkeyup="textCounter(this, 'counterPalavraChave', 200);" class="form-control obrigatorio ToLower"
+                   type="text"
+                   data-placement="top"
+                   data-toggle="tooltip"
+                   data-html="true"
+                   title="<i class='fa fa-exclamation-triangle fa-fw'></i> Neste campo deverá ser informado as palavras chave referente ao assunto do trabalho separados com vírgulas(,). Ex.: cachorro, gato, ovelha" />
+
+            @*<kp style="color:#808080" id="counterPalavraChave">Caracteres Restantes: <b>@(150 - Model.PalavraChave.Length)</b></kp>*@
+            <p style="color:#808080" id="counterPalavraChave">
+                Caracteres Restantes: <b>
+                    @if (!String.IsNullOrEmpty(Model.PalavraChave))
+                    {
+                        <span>
+                            @(150 - Model.PalavraChave.Length)
+                        </span>
+                    }
+                    else
+                    {
+                        <span>150</span>
+                    }
+                </b>
+            </p>
+        </div>
+        <div class="form-group col-md-12">
+            <div class="row">
+                <div class="form-group">
+                    <div class="panel-default">
+                        <div class="panel-heading" style="border: 1px solid #ddd;">
+                            <B><FONT COLOR="RED">ATENÇÃO!</FONT> </B>
+                            <br />
+                            <p>O trabalho a ser enviado não deverá conter qualquer dado que pode identificar os autores. Portanto revise o documento antes de envia-lo, pois será passivo de reprovação.</p>
+                            <p>O arquivo deve estar no formato WORD (.docx, .doc) </p>
+                        </div>
+                    </div>
+                </div>
+                @Html.HiddenFor(x => x.NomeArquivoCompleto)
+                <label asp-for="NomeArquivoCompleto" class="control-label">Envie o documento*</label>
+                <input id="ArquivoCompleto" name="ArquivoCompleto" type="file" data-allowed-file-extensions='["doc", "docx"]' data-msg-placeholder="Selecione um arquivo Word">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.ToLower').on('input', function (evt) {
+            $(this).val(function (_, val) {
+                return val.toLowerCase();
+            });
+        });
+    });
+</script>

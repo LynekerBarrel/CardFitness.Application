@@ -1,0 +1,221 @@
+﻿@model AdmSimposio.Models.InscricaoCategoriaModeloRelatorio
+
+
+<form asp-action="EstornarPercentual" id="EstornarPercentual">
+    @Html.HiddenFor(model => model.CodInscricaoCategoria)
+    @Html.HiddenFor(model => model.PercentualEstornoOriginal)
+
+    <div class="modal-body" id="modal" style="height:350px;display:block; overflow-y:scroll;width:100%;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Escolha o percentual do estorno você fornecer ao participante.
+            </div>
+            <div class="panel-body">
+                <div>
+                    <b>Nome do participante:</b> @Html.DisplayFor(x => x.Pessoa.Pessoa.Nome)
+                </div>
+                <div>
+                    <b>Modalidade:</b> @Html.DisplayFor(x => x.DescModalidade)
+                </div>
+                <div>
+                    <b>Valor original da inscrição:</b> @Html.DisplayFor(x => x.ValorFormatado)
+                </div>
+                <div>
+                    <b>Valor atual da inscrição:</b> @Html.DisplayFor(x => x.ValorFinalFormatado)
+                </div>
+                <hr />
+                <div class="text-center">
+                    <div class="form-group">
+                        <label class="control-label">Percentual do estorno </label>
+                        <div>
+                            <button class="btn btn-primary menos" type="button" style="margin-top: -2px">
+                                <i class="fa fa-minus fa-fw"></i>
+                            </button>
+                            <input asp-for="PercentualEstorno" class="form-control" type="number" max="100" min='@Model.PercentualEstorno' style="display:inline !important; width:100px !important" onkeydown="preventNumberInput(event)" onkeyup="preventNumberInput(event)" />
+                            <button class="btn btn-primary mais" type="button" style="margin-top: -2px">
+                                <i class="fa fa-plus fa-fw"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <div class="panel-default">
+                            <div class="panel-heading" style="border: 1px solid #ddd;">
+                                @if (!string.IsNullOrEmpty(Model.PercentualEstorno) && Convert.ToDouble(Model.PercentualEstorno.Replace(".", ",")) < 100)
+                                {
+                                    <span>
+                                        O valor do estorno deve ficar entre @((Convert.ToDouble(Model.PercentualEstorno.Replace(".", ",")) + 0.1).ToString()) % (percentual já recebido pelo participante é de @Model.PercentualEstorno %) e 100 %.
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>
+                                        Participante já recebeu estorno no valor total da inscrição, portanto não há ação para ser feita.
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div>
+                    <b>Valor do estorno total: </b> <span id="valorAtual"></span>
+                </div>
+                <div>
+                    <b>Valor do estorno desta sessão: </b> <span id="valorEstornoAtual">R$ 0,00</span>
+                </div>
+                <div>
+                    <b>Valor remanescente pós estorno desta sessão: </b> <span id="valorFinalPosEstorno">@Model.ValorFinalFormatado</span>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+
+        <div class="form-group text-left">
+            <label asp-for="RazaoDoEstorno" class="control-label">Razão do estorno</label>
+            <textarea asp-for="RazaoDoEstorno" class="form-control obrigatorio" placeholder="Descreva as razões para estornar o valor a este participante." />
+        </div>
+        <hr />
+        <input type="button" id="btnEstornar" value="Confirmar" class="btn btn-success" onclick="if (!validaForm(this)) { return false } else { EstornarPercentual() }" />
+        <button type="button" id="btnCancelar" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        console.log('toki');
+        var Valor = @Model.Valor - parseFloat(@Model.ValorFinal).toFixed(2);
+        $("#valorAtual").html('R$ ' + mascaraValor(Valor.toFixed(2)));
+        $('#btnEstornar').attr("disabled", "disabled");
+
+        $('#PercentualEstorno').keypress(function (e) {
+            preventNumberInput(e);
+        });
+
+    });
+    function EstornarPercentual() {
+            $('#dvMensagemErro').css('display', 'none');
+            $("#PercentualEstorno").removeClass("input-erro");
+            $("#PercentualEstorno").addClass("input-sucesso");
+            if ($("#PercentualEstorno").val() > 0) {
+                $('#btnEstornar').attr("disabled", "disabled");
+                $('#btnCancelar').attr("disabled", "disabled");
+                var urlProrrogar = '@Url.Action("EstornarPercentual", "Financeiro")';
+                $.ajax({
+                    url: urlProrrogar,
+                    type: 'POST',
+                    data: $('#EstornarPercentual').serialize(),
+                    success: function (result) {
+                        $('#btnEstornar').removeAttr("disabled");
+                        $('#btnCancelar').removeAttr("disabled");
+                        $("#ModalInserirEstorno").modal('hide')
+                        if (result.erro) {
+                            NotificaoErro(result.message);
+                        }
+                        else {
+                            location.reload(true)
+                            Report();
+                        }
+                    },
+                    error: function (xhr, status) {
+                        alert(status);
+                    }
+                });
+            }
+            else {
+                $("#PercentualEstorno").removeClass("input-sucesso");
+                $("#PercentualEstorno").addClass("input-erro");
+                $('#dvMensagemErro').removeAttr("style");
+                $('#dvMensagemErro').css('margin-top', '15px');
+            }
+    }
+
+
+    function preventNumberInput(e) {
+        var keyCode = (e.keyCode ? e.keyCode : e.which);
+        if (keyCode == 118 || keyCode == 110) {
+            e.preventDefault();
+        }
+    }
+    jQuery(function () {
+
+        var j = jQuery; //Just a variable for using jQuery without conflicts
+        var addInput = '#PercentualEstorno'; //This is the id of the input you are changing
+        var n = @Model.PercentualEstorno; //n is equal to 1
+        var ValorOriginal = @Model.Valor;
+
+        var ValorEstorno = @Model.Valor - parseFloat(@Model.ValorFinal).toFixed(2);
+        //Set default value to n (n = 1)
+        j(addInput).val(n);
+
+        //On click add 1 to n
+        j('.mais').on('click', function () {
+
+            if (n < 100) {
+                $('#btnEstornar').removeAttr("disabled");
+                $(addInput).val(++n);
+                $("#valorAtual").html('R$ ' + mascaraValor(((n * ValorOriginal) / 100).toFixed(2)));
+                $("#valorFinalPosEstorno").html('R$ ' + mascaraValor((@Model.Valor - (j(addInput).val() * ValorOriginal) / 100).toFixed(2)));
+                $("#valorEstornoAtual").html('R$ ' + mascaraValor(((n * ValorOriginal) / 100 - ValorEstorno).toFixed(2)));
+
+            }
+        })
+
+        j('.menos').on('click', function () {
+            //If n is bigger or equal to 1 subtract 1 from n
+
+            if (n > @Model.PercentualEstorno) {
+                $('#btnEstornar').removeAttr("disabled");
+                j(addInput).val(--n);
+                $("#valorAtual").html('R$ ' + mascaraValor(((n * ValorOriginal) / 100).toFixed(2)));
+                $("#valorFinalPosEstorno").html('R$ ' + mascaraValor((@Model.Valor - (j(addInput).val() * ValorOriginal) / 100).toFixed(2)));
+                $("#valorEstornoAtual").html('R$ ' + mascaraValor(((n * ValorOriginal) / 100 - ValorEstorno).toFixed(2)));
+
+            }
+            if (n == @Model.PercentualEstornoOriginal) {
+                    $('#btnEstornar').attr("disabled", "disabled");
+                }
+        });
+        $("#PercentualEstorno").blur(function () {
+            $('#btnEstornar').removeAttr("disabled");
+            if (j(addInput).val() > @Model.PercentualEstorno && j(addInput).val() <= 100) {
+                n = j(addInput).val();
+                var valorfinal = (n * ValorOriginal) / 100;
+                $("#valorAtual").html('R$ ' +mascaraValor(valorfinal.toFixed(2)));
+                $("#valorFinalPosEstorno").html('R$ ' + mascaraValor((@Model.Valor - (j(addInput).val() * ValorOriginal) / 100).toFixed(2)));
+                $("#valorEstornoAtual").html('R$ ' + mascaraValor(((n * ValorOriginal) / 100 - ValorEstorno).toFixed(2)));
+            } else {
+                if (j(addInput).val() > 100){
+                    j(addInput).val(100);
+                    $("#valorAtual").html('R$ ' + mascaraValor(((j(addInput).val() * ValorOriginal) / 100).toFixed(2)));
+                    $("#valorFinalPosEstorno").html('R$ ' + mascaraValor((@Model.Valor - (j(addInput).val() * ValorOriginal) / 100).toFixed(2)));
+                    $("#valorEstornoAtual").html('R$ ' + mascaraValor(((j(addInput).val() * ValorOriginal) / 100 - ValorEstorno).toFixed(2)));
+                }
+                else {
+                    $('#btnEstornar').attr("disabled", "disabled");
+                    j(addInput).val(@Model.PercentualEstorno);
+                    $("#valorAtual").html('R$ ' + mascaraValor(((j(addInput).val() * ValorOriginal) / 100).toFixed(2)));
+                    $("#valorFinalPosEstorno").html('R$ ' + mascaraValor((@Model.Valor - (j(addInput).val() * ValorOriginal) / 100).toFixed(2)));
+                    $("#valorEstornoAtual").html('R$ ' + mascaraValor(((j(addInput).val() * ValorOriginal) / 100 - ValorEstorno).toFixed(2)));
+                }
+                n = j(addInput).val();
+
+            }
+        });
+    });
+
+
+    function mascaraValor(valor) {
+        valor = valor.toString().replace(/\D/g, "");
+        valor = valor.toString().replace(/(\d)(\d{8})$/, "$1.$2");
+        valor = valor.toString().replace(/(\d)(\d{5})$/, "$1.$2");
+        valor = valor.toString().replace(/(\d)(\d{2})$/, "$1,$2");
+        return valor
+    }
+</script>

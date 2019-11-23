@@ -1,0 +1,71 @@
+﻿@{
+    ViewData["Title"] = "Lista de Presença";
+}
+
+<div class="row" style="padding:30px 20px 20px 20px;">
+    <div class="panel panel-default panel-loading">
+        <div>
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+    </div>
+    <div id="PartialIndex"></div>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+    var Ambiente = '@TempData["Ambiente"]';
+    window.onload = function () {
+        $.get('@Url.Content("~/ListaPresenca/MenuPrincipal")' + "?Ambiente=" + Ambiente, function (content) {
+            $("#Menu").html(content);
+        });
+        CallForm(Ambiente);
+    }
+    function CallForm(Ambiente) {
+        $('.panel-loading').show();
+        console.log("toki");
+        switch (Ambiente) {
+            case "ListaPresencaConfigurar":
+                var url = '@Url.Action("LoadConfigurar", "ListaPresenca")';
+                break;
+            case "ListaPresencaImprimir":
+                var url = '@Url.Action("LoadImprimir", "ListaPresenca")';
+                break;
+             case "ListaPresencaTrabalho":
+                var url = '@Url.Action("LoadAdicionarTrabalho", "ListaPresenca")';
+                break;
+               case "ListaPresencaTrabalhoRemover":
+                var url = '@Url.Action("LoadAdicionarTrabalhoRemover", "ListaPresenca")';
+                break;
+            default:
+                 var url = '@Url.Action("LoadConfigurar", "ListaPresenca")';
+                break;
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function (result) {
+                if (result.unauthorized) {
+                    location.href = result.redirect;
+                }
+                else if (result.erro) {
+                    NotificaoErro(result.message)
+                }
+                else {
+                    $('.panel-loading').hide();
+                    $('#PartialIndex').empty();
+                    $('#PartialIndex').html(result);
+                }
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu uma inconsistência no sistema, entre em contato com suporte.");
+            }
+        });
+    }
+</script>

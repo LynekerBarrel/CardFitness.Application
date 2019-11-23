@@ -1,0 +1,56 @@
+﻿@model AdmSimposio.Models.EmailLembrete
+
+<script>
+     function EnviarEmailLembrete() {
+        //var oTable = $("#tbEmail").dataTable();
+        //var sData = $('input', oTable.fnGetNodes()).serialize();
+
+         $('#enviarEmail').attr("disabled", "disabled");
+        var url = '@Url.Action("EnviarEmailLembrete", "Avaliacao")';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: $('#EmailLembrete').serialize(),
+            success: function (result) {
+                $('#enviarEmail').removeAttr("disabled");
+                $("#ModalLembrete").modal('hide')
+                if (result.erro) {
+                    NotificaoErro(result.message);
+                }
+                else {
+                    NotificaoSucesso(result.message);
+                }
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu uma inconsistência no sistema, entre em contato com suporte.");
+            }
+        });
+    }
+</script>
+<form asp-action="EmailLembrete" id="EmailLembrete">
+    @Html.HiddenFor(model => model.Codigos)
+    @Html.HiddenFor(model => model.Indicacao)
+    @Html.HiddenFor(model => model.NomePessoa)
+    @Html.HiddenFor(model => model.EmailPessoa)
+    <div class="modal-body">
+        <div class="form-group">
+            <p><b>Nome:</b> @Model.NomePessoa</p>
+            <p><b>Email:</b> @Model.EmailPessoa</p>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Assunto do e-mail</label>
+            <input asp-for="AssuntoEmail" id="TituloPropositura" onkeyup="textCounter(this, 'AssuntoEmail', 100);" class="form-control obrigatorio" type="text" />
+            <p style="color:#808080" id="AssuntoEmail">Caracteres Restantes: <b>100</b></p>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Corpo do e-mail</label>
+            <textarea asp-for="CorpoEmail" class="form-control obrigatorio" style="min-height: 200px" onkeyup="textCounter(this, 'counterJust', 3000);"></textarea>
+            <p style="color:#808080" id="counterJust">Caracteres Restantes: <b>3000</b></p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="button" id="enviarEmail" value="Enviar" class="btn btn-success" onclick="if (validaForm(this)) { EnviarEmailLembrete() } else { return false;}" />
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+        @*<input type="submit" value="Enviar" class="btn btn-success" onclick="if (!validaForm(this)) return false;" />*@
+    </div>
+</form>

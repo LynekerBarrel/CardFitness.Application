@@ -1,0 +1,85 @@
+﻿@model AdmSimposio.Models.Modalidade
+
+<script src="~/js/SimposioValidate.js"></script>
+<script type="text/javascript">
+    var LoadEtapasEdit = function (CodCategoria) {
+        var urlLoadEtapa = '@Url.Action("LoadEtapas", "Basicos", new { index = "CodCategoria", Funcao = "Criar" })'.replace("CodCategoria", CodCategoria).replace("&amp;", "&");
+        LoadEtapasCriar(urlLoadEtapa);
+    }
+
+    $(function () {
+        $('#msCriar').change(function () {
+        }).multipleSelect({
+            filter: true,
+            width: '100%',
+            placeholder: 'Selecione...'
+        });
+    });
+</script>
+
+@if (TempData["ErroCategSemEtapa"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        showMessage("@Html.Raw((string)TempData["ErroCategSemEtapa"])");
+    </script>
+}
+<div class="Partialmodal">
+    <form asp-action="CriarModalidade" id="CriarModalidade">
+        @Html.HiddenFor(model => model.CodSimposio)
+        <div class="modal-body">
+            <div id="response"></div>
+            <div class="form-group text-center">
+                <h4>@Html.DisplayFor(model => model.Simposio.TituloReduzido)</h4>
+            </div>
+            <div class="form-group">
+                <label asp-for="DescModalidade" class="control-label"></label>
+                <input asp-for="DescModalidade" class="form-control obrigatorio" placeholder="Ex.: Resumo Simples - Documentário" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Escolha as formações</label>
+                @Html.ListBoxFor(x => x.FormacaoModalidades, new MultiSelectList(Model.Formacoes, "CodFormacao", "DescFormacao"), new { id = "msCriar", @class = "msCriar obrigatorio", multiple = "multiple", @onchange = "ValidarMultipleSelect(this.id)" })
+
+            </div>
+            <div class="form-group">
+                <label class="control-label">Escolha a categoria</label>
+                @Html.DropDownListFor(x => x.CodCategoria, new SelectList(Model.Categorias, "CodCategoria", "DescCategoria"), "Selecione...", new { @class = "form-control obrigatorio", @onchange = "LoadEtapasEdit(this.value)" })
+            </div>
+            @{
+                if (Model.EtapasModalidades != null && Model.EtapasModalidades.Any())
+                {
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <label class="control-label">Etapa</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="control-label">Valor</label>
+                        </div>
+                    </div>
+                    <div class="row" id="RowValor">
+                        @foreach (var item in Model.EtapasModalidades)
+                        {
+                            @Html.HiddenFor(x => x.EtapasModalidades[Model.EtapasModalidades.IndexOf(item)].CodModalidade)
+                            @Html.HiddenFor(x => x.EtapasModalidades[Model.EtapasModalidades.IndexOf(item)].CodEtapaModalidade)
+                            @Html.HiddenFor(x => x.EtapasModalidades[Model.EtapasModalidades.IndexOf(item)].CodEtapaCategoria)
+                            <div>
+                                <div class="form-group col-sm-8">
+                                    <input asp-for="EtapasModalidades[Model.EtapasModalidades.IndexOf(item)].EtapaCategoria.Etapa.DescEtapa" class="form-control" disabled="disabled" />
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">R$</div>
+                                        <input asp-for="EtapasModalidades[Model.EtapasModalidades.IndexOf(item)].Valor" class="form-control obrigatorio campoDinheiro" placeholder="Ex.: 40,00" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+        <div class="modal-footer">
+            <input type="submit" value="Criar" class="btn btn-success" onclick="if ( ! validaForm(this)) return false;" />
+            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+        </div>
+    </form>
+</div>

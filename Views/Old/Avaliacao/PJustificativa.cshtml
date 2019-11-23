@@ -1,0 +1,75 @@
+﻿@model AdmSimposio.Models.TrabalhoInteracaoModelo
+
+<div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+    <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    @if (Model.CodSituacaoInteracao == 3) /* Rejeição */
+    {
+        <h4 class="modal-title" id="exampleModalLabel">Justificativa do avaliador - Trabalho</h4>
+    }
+    @if (Model.CodSituacaoInteracao == 4 || Model.CodSituacaoInteracao == 5) /* Ressalva */
+    {
+        <h4 class="modal-title" id="exampleModalLabel">Ressalva do avaliador - Trabalho</h4>
+    }
+  
+</div>
+
+<div class="modal-body" style="font-family: Calibri; height:100%;display:block; overflow-y:scroll;width:100%;">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            @if (Model.CodSituacaoInteracao == 3) /* Rejeição */
+            {
+                <b>Segue abaixo a justificativa do avaliador.</b>
+            }
+            @if (Model.CodSituacaoInteracao == 4 || Model.CodSituacaoInteracao == 5) /* Ressalva */
+            {
+                <b>Segue abaixo a ressalva do avaliador.</b>
+            }
+            @if (Model.CodSituacaoInteracao == 8) /* Ressalva */
+            {
+                <b>Segue abaixo a justificativa do cancelamento.</b>
+            }
+        </div>
+        <div class="panel-body">
+            @*@if (Model.CodSituacaoTrabalho == 3) /* Rejeição */
+                {
+                    @foreach (var item in Model.lTrabalhoInteracao)
+                    {
+                        <b>Data: </b>
+                        <p>@item.DataInteracao.ToShortDateString()</p>
+                        <b>Parecer:</b><p>
+                            @item.Comentario
+                        </p>
+                        if (Model.lTrabalhoInteracao.Last() != item)
+                        {
+                            <hr style="margin:5px 0px 10px 0px;" />
+                        }
+                    }
+
+                }
+
+                @if (Model.CodSituacaoTrabalho == 4) /* Ressalva */
+                {
+                    <div><p> @Html.DisplayFor(x => x.Comentario)</p></div>
+                }*@
+
+            <div><p> @Html.Raw(Model.Comentario)</p></div>
+
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    @if (Model.CodSituacaoInteracao == 5) /* Ressalva para comissão*/
+        {
+            <a class="btn btn-success" href="@Url.Action("Edit","Trabalho", new { Model.CodTrabalho })">
+                Corrigir Trabalho
+            </a>
+        }
+    <button data-dismiss="modal" type="button" class="btn btn-primary">Ok, Entendi!</button>
+</div>
+@* <label asp-for="Justificativa" class="control-label">Justificativa</label>*@
+
+
+
+

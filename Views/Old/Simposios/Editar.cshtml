@@ -1,0 +1,674 @@
+﻿@model AdmSimposio.Models.Simposio
+
+@{
+    ViewData["Title"] = "Edição do simpósio";
+}
+
+<script src="~/vendor/jquery/jquery.min.js"></script>
+<script src="~/js/Simposio.js"></script>
+<script src="https://cloud.tinymce.com/5/tinymce.min.js?apiKey=bf2t67avjifztkq3p9e3oz7svd184b0jc8t5i9p6lro7zjnq"></script>
+@if (TempData["Sucesso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoSucesso('@Html.Raw((string)TempData["Sucesso"])');
+        });
+    </script>
+}
+@if (TempData["Aviso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoAviso('@Html.Raw((string)TempData["Aviso"])');
+        });
+    </script>
+}
+@if (TempData["Erro"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoErro('@Html.Raw((string)TempData["Erro"])');
+        });
+    </script>
+}
+
+<script type="text/javascript" charset="utf-8">
+    window.onload = function () {
+            $.get('@Url.Content("~/Simposios/MenuPrincipal")', function (content) {
+            $("#Menu").html(content);
+        });
+    }
+    //function ControlarInteracao() {
+    //    var valor = $('#QtdMaxInteracoes').val();
+    //    if (valor == '2') {
+    //        $('#QtdMaxInteracoes').val('1');
+    //    }
+    //    else if (valor == '4') {
+    //        $('#QtdMaxInteracoes').val('3');
+    //    }
+    //    else if (valor > '5') {
+    //        $('#QtdMaxInteracoes').val('5');
+    //    }
+    //}
+</script>
+
+
+
+<script type="text/javascript">
+    var urlArquivoBanner = '@Html.Raw((string)ViewBag.urlArquivoBanner)';
+    var nomeArquivoBanner = '@Html.Raw((string)ViewBag.nomeArquivoBanner)';
+
+    var urlArquivoLogo = '@Html.Raw((string)ViewBag.urlArquivoLogo)';
+    var nomeArquivoLogo = '@Html.Raw((string)ViewBag.nomeArquivoLogo)';
+
+    var urlArquivoCertificado = '@Html.Raw((string)ViewBag.urlArquivoCertificado)';
+    var nomeArquivoCertificado = '@Html.Raw((string)ViewBag.nomeArquivoCertificado)';
+</script>
+
+<div class="row" style="padding:30px 20px 20px 20px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a href="#" data-toggle="modal" data-target="#AjudaSimposioEditar"><i class="fa fa-tag fa-fw"></i> Cadastro Simpósio - Ajuda</a>
+            <div style="float:right">
+                <a asp-action="Index"> <i class="fa fa-arrow-left fa-fw"></i>Voltar</a>
+            </div>
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+            <ul class="nav nav-tabs" id="tabSimposio">
+                <li class="active">
+                    <a href="#simposio" data-toggle="tab">Simpósio</a>
+                </li>
+                <li>
+                    <a href="#imagens" data-toggle="tab">Imagens</a>
+                </li>
+                <li>
+                    <a href="#propositura" data-toggle="tab">Propositura</a>
+                </li>
+                <li>
+                    <a href="#regrasAvaliacao" data-toggle="tab">Regras Avaliação</a>
+                </li>
+                <li>
+                    <a href="#regulamento" data-toggle="tab">Regulamento</a>
+                </li>
+            </ul>
+            <form asp-action="Editar" method="post" enctype="multipart/form-data">
+                @Html.HiddenFor(model => model.CodSimposio)
+                @Html.HiddenFor(model => model.UltimoAnaisGerado)
+                @Html.HiddenFor(model => model.UltimoAnaisGeradoCompleto)
+                @Html.HiddenFor(model => model.DataCriacao)
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="simposio">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="view-titulo-tab line-bottom">
+                                    <div class="pull-left">
+                                        <h4>Sobre o Simpósio</h4>
+                                    </div>
+                                    <div class="pull-right">
+                                        <input asp-for="Ativo" type="checkbox" data-toggle="toggle" data-on="Ativo" data-off="Inativo" data-onstyle="success" data-offstyle="danger" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row" style="padding:0px 20px 20px 20px;">
+                                    <div class="panel-body">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-4">
+                                                <div class="form-group">
+                                                    <label asp-for="TituloReduzido" class="control-label"></label>
+                                                    <input asp-for="TituloReduzido" class="form-control obrigatorio" maxlength="50" />
+                                                    @*<span asp-validation-for="TituloReduzido" class="text-danger"></span>*@
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-8">
+                                                <div class="form-group">
+                                                    <label asp-for="TituloSimposio" class="control-label"></label>
+                                                    <input asp-for="TituloSimposio" class="form-control obrigatorio" maxlength="200" />
+                                                    @* <span asp-validation-for="TituloSimposio" class="text-danger"></span>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="DescSimposio" class="control-label"></label>
+                                            <textarea asp-for="DescSimposio" class="form-control obrigatorio" style="min-height:120px"></textarea>
+                                            @*<p style="color:#808080" id="counterDesc">Caracteres Restantes: <b>3000</b></p>*@
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <label asp-for="DataInicioSimposio" class="control-label"></label>
+                                                <input asp-for="DataInicioSimposio" class="form-control obrigatorio" onblur="ChecarDataInicio(this, '#DataFimSimposio');" />
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label asp-for="DataFimSimposio" class="control-label"></label>
+                                                <input asp-for="DataFimSimposio" class="form-control obrigatorio" onblur="ChecarDataFim(this, '#DataInicioSimposio');" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="view-titulo-tab line-bottom" style="padding-top: 0px !important">
+                                    <div class="pull-left">
+                                        <h4>Parâmetros</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row" style="padding:0px 20px 20px 20px;">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Trabalhos</div>
+                                                    <input asp-for="QtdMaxTrabalhos" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 2" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade máxima de trabalhos por inscrição.</span>
+                                            </div>
+                                            <div class="form-group col-sm-4">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Autores</div>
+                                                    <input asp-for="QtdMaxCoautores" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 4" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade máxima de autores por trabalho.</span>
+                                            </div>
+                                            <div class="form-group col-sm-4">
+                                                <label class="control-label">Inscrição Única:</label>
+                                                <input asp-for="InscricaoUnica" type="checkbox" data-toggle="toggle" data-on="Sim" data-off="Não" data-onstyle="success" data-offstyle="danger" />
+                                                <span class="tag-Help">Congressista pode ou não se inscrever mais de uma vez no simpósio atual. Ex.: Sim</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Dias para correção Resumo</div>
+                                                    <input asp-for="DiasLimiteCorrecao" class="form-control numero" max="255" type="number" placeholder="Ex.: 1" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade de dias que o congressista terá para corrigir o trabalho nas modalidades de Resumo Simples após retorno do avaliador.</span>
+                                            </div>
+
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Dias para correção Completo</div>
+                                                    <input asp-for="DiasLimiteCorrecaoCompleto" class="form-control numero" max="255" type="number" placeholder="Ex.: 4" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade de dias que o congressista terá para corrigir o trabalho nas modalidades de Trabalho Completo após retorno do avaliador.</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Interação avaliador Resumo</div>
+                                                    <input asp-for="QtdMaxInteracoes" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 1" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade máxima de interações entre avaliador e congressista para os trabalhos com as modalidades de Resumo Simples.</span>
+                                            </div>
+
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Interação avaliador Completo</div>
+                                                    <input asp-for="QtdMaxInteracoesCompleto" class="form-control obrigatorio numero" max="255" onkeyup="ControlarInteracao()" type="number" placeholder="Ex.: 2" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade máxima de interações entre avaliador e congressista para os trabalhos com as modalidades de Trabalho Completo.</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Dias para avaliar Resumo</div>
+                                                    <input asp-for="DiasLimiteAvaliacao" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 5" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade máxima de dias em que o avaliador terá para dar o parecer de um resumo simples, inicando contagem a partir da aceitação do convite.</span>
+                                            </div>
+
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Dias para avaliar Trab. Completo</div>
+                                                    <input asp-for="DiasLimiteAvaliacaoCompleto" class="form-control obrigatorio numero" max="255" onkeyup="ControlarInteracao()" type="number" placeholder="Ex.: 10" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade máxima de dias em que o avaliador terá para dar o parecer de um trabalho completo, inicando contagem a partir da aceitação do convite.</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-12">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Dias para retorno do convite de avaliar trabalho</div>
+                                                    <input asp-for="DiasLimiteConviteAvaliarTrabalho" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 2" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade de dias em que o avaliador pode aceitar/rejeitar o convite para um devido trabalho.</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Carga horária avaliador</div>
+                                                    <input asp-for="CargaHorariaAvaliador" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 40" />
+                                                </div>
+                                                <span class="tag-Help">Carga horária do avaliador que será considerada na certificação.</span>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Carga horária comissões</div>
+                                                    <input asp-for="CargaHorariaComissao" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 30" />
+                                                </div>
+                                                <span class="tag-Help">Carga horária das comissões que será considerada na certificação.</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-12">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">STs por Avaliador</div>
+                                                    <input asp-for="QtdMaxSTPorAvaliador" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 3" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade máxima de sugestões de Sessões Temáticas por avaliador.</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Avaliadores por trabalho</div>
+                                                    <input asp-for="QtdAvaliadoresPorTrabalho" class="form-control obrigatorio" max="255" placeholder="Ex.: 2" />
+                                                </div>
+                                                <span class="tag-Help">Quantidades de vezes que o trabalho na modalidade resumo simples poderá ser avaliado caso seja rejeitado.</span>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Avaliadores por trabalho Completo</div>
+                                                    <input asp-for="QtdAvaliadoresPorTrabalhoCompleto" class="form-control obrigatorio" max="255" placeholder="Ex.: 2" />
+                                                </div>
+                                                <span class="tag-Help">Quantidades de vezes que o trabalho na modalidade trabalho completo podérá ser avaliado caso seja rejeitado.</span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-12">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Data limite inscrição de Avaliador</div>
+                                                    <input asp-for="DataLimiteInscAvaliador" class="form-control obrigatorio" max="9999-12-31" />
+                                                </div>
+                                                <span class="tag-Help">Data em que finalizará a etapa de inscrição de avaliadores.</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="pull-right">
+                                                <button id="SimposioProximo" type="button" class="btn btn-secondary VaiParaImagens">Próximo</button>
+                                                <a asp-action="Index" class="btn btn-primary">Cancelar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade in" id="imagens">
+                        <div class="row" style="padding:10px 20px 20px 20px;">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <b>Importante: </b>As imagens enviadas devem estar em um dos formatos: <u>JPG - JPEG - PNG - BMP</u>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label asp-for="NomeArquivoBanner" class="control-label"></label>
+                                        <input id="ArquivoBanner" name="ArquivoBanner" type="file" class="file" data-allowed-file-extensions='["jpg", "jpeg","png","bmp"]' data-show-upload="false" data-browse-on-zone-click="false" data-msg-placeholder="Selecione a imagem do banner...">
+                                    </div>
+                                    <div class="form-group col-sm-6">
+                                        <label asp-for="NomeArquivoLogo" class="control-label"></label>
+                                        @*@Html.TextBoxFor(x => x.NomeArquivoLogo, new { Name = "ArquivoLogo", id = "ArquivoLogo", type = "file", @class = "file" })*@
+                                        <input id="ArquivoLogo" name="ArquivoLogo" type="file" class="file" data-allowed-file-extensions='["jpg", "jpeg","png","bmp"]' data-show-upload="false" data-browse-on-zone-click="false" data-msg-placeholder="Selecione a imagem da logo...">
+                                        @*<input id="ArquivoLogo" name="ArquivoLogo" type="file" class="file" data-allowed-file-extensions='["jpg", "jpeg","png","bmp"]' data-show-upload="false" data-browse-on-zone-click="true" data-msg-placeholder="Selecione a imagem da logo...">*@
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <label asp-for="NomeArquivoCertificado" class="control-label"></label>
+                                        <input id="ArquivoCertificado" name="ArquivoCertificado" type="file" class="file" data-allowed-file-extensions='["jpg", "jpeg","png","bmp"]' data-show-upload="false" data-browse-on-zone-click="false" data-msg-placeholder="Selecione a imagem do certificado...">
+
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-top:20px">
+                                    <div class="pull-right">
+                                        <button id="ImagensVoltar" type="button" class="btn btn-secondary VaiParaSimposio">Anterior</button>
+                                        <button id="ImagensProximo" type="button" class="btn btn-secondary VaiParaPropositura">Próximo</button>
+                                        <a asp-action="Index" class="btn btn-primary">Cancelar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade in" id="propositura">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="view-titulo-tab line-bottom">
+                                    <div class="pull-left">
+                                        <h4>Parâmetros propositura</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row" style="padding:0px 20px 20px 20px;">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <label asp-for="DataInicioPropositura" class="control-label"></label>
+                                                <input asp-for="DataInicioPropositura" class="form-control obrigatorio" onblur="ChecarDataInicio(this, '#DataFimPropositura');" />
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <label asp-for="DataFimPropositura" class="control-label"></label>
+                                                <input asp-for="DataFimPropositura" class="form-control obrigatorio" onblur="ChecarDataFim(this, '#DataInicioPropositura');" />
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-top: 30px">
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Autores propositura</div>
+                                                    <input asp-for="QtdMaxAutoresPropositura" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 3" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade máxima de proponentes por propositura.</span>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Caracter no título</div>
+                                                    <input asp-for="TamTituloPropositura" class="form-control obrigatorio numero" max="10000" type="number" placeholder="Ex.: 300" />
+                                                </div>
+                                                <span class="tag-Help">Tamanho do título da propositura em caracteres, considerando os espaços em branco.</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Caracter na descrição</div>
+                                                    <input asp-for="TamDescPropositura" class="form-control obrigatorio numero" max="10000" type="number" placeholder="Ex.: 1500" />
+                                                </div>
+                                                <span class="tag-Help">Tamanho da descrição curta da propositura em caracteres, considerando os espaços em branco.</span>
+                                            </div>
+                                            <div class="form-group col-sm-6">
+                                                <div class="input-group">
+                                                    <div class="input-group-addon">Proposituras</div>
+                                                    <input asp-for="QtdMaxProposituras" class="form-control obrigatorio numero" max="255" type="number" placeholder="Ex.: 2" />
+                                                </div>
+                                                <span class="tag-Help">Quantidade máxima proposituras por professor.</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="pull-right">
+                                                <button id="ProposituraVoltar" type="button" class="btn btn-secondary VaiParaImagens">Anterior</button>
+                                                <button id="ProposituraProximo" type="button" class="btn btn-secondary VaiParaRegrasAvaliacao">Próximo</button>
+                                                <a asp-action="Index" class="btn btn-primary">Cancelar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade in" id="regrasAvaliacao">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="view-titulo-tab line-bottom">
+                                    <div class="pull-left">
+                                        <h4>Regras de Avaliação</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row" style="padding:0px 20px 20px 20px;">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="control-label">Regras para Resumo Simples</label>
+                                            <textarea asp-for="RegrasFormularioSimples" class="form-control obrigatorio" style="min-height:120px"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Regras para Mesa</label>
+                                            <textarea asp-for="RegrasFormularioMesa" class="form-control obrigatorio" style="min-height:120px"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label">Regras para Trabalho Completo</label>
+                                            <textarea asp-for="RegrasFormularioCompleto" class="form-control obrigatorio" style="min-height:120px"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="pull-right">
+                                                <button id="RegrasAvaliacaoVoltar" type="button" class="btn btn-secondary VaiParaPropositura">Anterior</button>
+                                                <button id="RegrasAvaliacaoProximo" type="button" class="btn btn-secondary VaiParaRegulamento">Próximo</button>
+                                                <a asp-action="Index" class="btn btn-primary">Cancelar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade in" id="regulamento">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="view-titulo-tab line-bottom">
+                                    <div class="pull-left">
+                                        <h4>Regulamento do Simpósio</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="row" style="padding:0px 20px 20px 20px;">
+                                    <div class="panel-body">
+
+                                        @*<div id="toolbar-container"></div>
+                                            <div id="editor" class="edicaoDocumento" style="border-bottom: 1px solid #c4c4c4; border-left: 1px solid #c4c4c4;border-right: 1px solid #c4c4c4; min-height:250px;">
+
+                                            </div>*@
+
+                                        <textarea asp-for="Regulamento" id="RegulamentoSimposio" class="obrigatorio"></textarea>
+                                        <div class="form-group">
+                                            <div class="pull-right" style="margin-top: 15px">
+                                                <input type="submit" value="Atualizar" class="btn btn-success" onclick="if ( ! validaForm(this)) return false;" />
+                                                <button id="RegulamentoVoltar" type="button" class="btn btn-secondary VaiParaRegrasAvaliacao">Anterior</button>
+                                                <a asp-action="Index" class="btn btn-primary">Cancelar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div id="dvMensagemErro" class="alert alert-danger text-black-50" style="font-size: 16px; display:none">
+                Há campos obrigatórios que não foram informados, verificar antes de tentar salvar.
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="AjudaSimposioEditar" tabindex="-1" role="dialog" aria-labelledby="AjudaSimposioEditar" aria-hidden="true">
+    <div class="modal-dialog" role="document" style=" height: 60%">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Ajuda - Editar Simpósio</h4>
+            </div>
+            <div class="modal-body" style="font-family: Calibri; height:450px;display:block; overflow-y:scroll;width:100%;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Para todas as outras funcionalidades do sistema ADM Simpósio será considerado o simpósio que está ativo no momento, para deixar o simpósio ativo, basta entrar na edição do simpósio, como demonstrado na imagem acima, e na tela de edição, clicar em inativo, que irá mudar para ativo, e então salvar, conforme demonstrado na tela abaixo.
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Simposio/Ativar.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <b>Importante: </b> Poderá ter apenas um simpósio ativo, portanto caso tiver mais de um simpósio cadastrado, e for necessário ativar um simpósio que não seja o que está ativa atualmente, será necessário desativar.
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Para editar um simpósio é necessário preencher todos os dados, para todas as abas. Para navegar nas abas, poderá clicar diretamente no nome de cada uma, ou clicar na navegação logo no final da página, conforme demonstrado nas imagens abaixo:
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Simposio/Navegacao.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok, entendi!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<script>
+        $(function () {
+            $('#Regulamento').froalaEditor({
+                toolbarButtons: ['paragraphFormat', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', '|', 'color', 'inlineStyle', 'paragraphStyle', '|', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', '-', 'insertLink', 'insertTable', '|', 'quote', 'insertHR', 'clearFormatting', 'selectAll', 'html']
+            })
+            $('#DescSimposio').froalaEditor({
+                toolbarButtons: ['paragraphFormat', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', '|', 'color', 'inlineStyle', 'paragraphStyle', '|', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', '-', 'insertLink', 'insertTable', '|', 'quote', 'insertHR', 'clearFormatting', 'selectAll', 'html']
+            })
+        });
+    </script>*@
+
+
+
+@*<script>
+        ClassicEditor
+            .create(document.querySelector('#Regulamento'), {
+                toolbar: ['heading', '|', 'fontSize', 'fontFamily', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'highLight', 'alignment', '|', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo'],
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+    </script>*@
+@*<script>
+        DecoupledEditor
+            .create(document.querySelector('#editor'), {
+                toolbar: ['heading', '|', 'fontSize', 'fontFamily', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'highLight', 'alignment', '|', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|', 'undo', 'redo'],
+            })
+            .then(editor => {
+                const toolbarContainer = document.querySelector('#toolbar-container');
+
+                toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>*@
+
+
+
+<script>
+    tinymce.init({
+        selector: '#RegulamentoSimposio',
+        height: 500,
+        menubar: false,
+        plugins: [
+            'advlist autolink lists link image charmap print preview anchor textcolor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | bold italic underline strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat |'
+    });
+    tinymce.init({
+        selector: '#RegrasFormularioSimples',
+        height: 450,
+        menubar: false,
+        plugins: [
+            'advlist autolink lists link image charmap print preview anchor textcolor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | bold italic underline strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat |'
+    });
+    tinymce.init({
+        selector: '#RegrasFormularioMesa',
+        height: 450,
+        menubar: false,
+        plugins: [
+            'advlist autolink lists link image charmap print preview anchor textcolor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | bold italic underline strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat |'
+    });
+    tinymce.init({
+        selector: '#RegrasFormularioCompleto',
+        height: 450,
+        menubar: false,
+        plugins: [
+            'advlist autolink lists link image charmap print preview anchor textcolor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | bold italic underline strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat |'
+    });
+    tinymce.init({
+        selector: '#DescSimposio',
+        max_chars: 3000, // max. allowed chars
+        setup: function (ed) {
+            var allowedKeys = [8, 37, 38, 39, 40, 46]; // backspace, delete and cursor keys
+            ed.on('keydown', function (e) {
+                if (allowedKeys.indexOf(e.keyCode) != -1) return true;
+                if (tinymce_getContentLength() + 1 > this.settings.max_chars) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+                return true;
+            });
+            ed.on('keyup', function (e) {
+                tinymce_updateCharCounter(this, tinymce_getContentLength());
+            });
+        },
+        init_instance_callback: function () { // initialize counter div
+            $('#' + this.id).next().append('<div class="char_count" style="text-align:left; color:#808080; margin-left: 8px"></div>');
+            tinymce_updateCharCounter(this, tinymce_getContentLength());
+        },
+        paste_preprocess: function (plugin, args) {
+            var editor = tinymce.get(tinymce.activeEditor.id);
+            var len = editor.contentDocument.body.innerText.length;
+            var text = $(args.content).text();
+            if (len + text.length > editor.settings.max_chars) {
+                alert('Passou do limite de caracteres: ' + editor.settings.max_chars);
+                args.content = '';
+            } else {
+                tinymce_updateCharCounter(editor, len + text.length);
+            }
+        },
+        height: 500,
+        menubar: false,
+        plugins: [
+            'advlist autolink lists link image charmap print preview anchor textcolor',
+            'searchreplace visualblocks code fullscreen',
+            'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar: 'undo redo | formatselect | bold italic underline strikethrough forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link removeformat |'
+    });
+
+    function tinymce_updateCharCounter(el, len) {
+        $('#' + el.id).next().find('.char_count').text("Caracteres Restantes: " + (len - el.settings.max_chars) * -1);
+    }
+
+    function tinymce_getContentLength() {
+        return tinymce.get(tinymce.activeEditor.id).contentDocument.body.innerText.length;
+    }
+</script>

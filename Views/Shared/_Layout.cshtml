@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CardFitness - @ViewData["Title"]</title>
+    <environment include="Development">
+        <link href="~/bootstrap.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+        <link href="~/styles.css" rel="stylesheet" />
+        <link href="~/Site.css" rel="stylesheet" />
+        <link href="~/Notify/css/animate.css" rel="stylesheet" />
+        <link rel="shortcut icon" href="~/Image/icone.ico">
+    </environment>
+    <environment include="Staging,Production">
+        <link href="~/bootstrap.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+        <link href="~/styles.css" rel="stylesheet" />
+        <link href="~/Site.css" rel="stylesheet" />
+        <link href="~/Notify/css/animate.css" rel="stylesheet" />
+        <link rel="shortcut icon" href="~/Image/icone.ico">
+    </environment>
+
+</head>
+<body>
+    <div id='cssmenu'>
+        <ul style="background-color:gray;">
+            <li>@Html.ActionLink("Inicio", "Index", "Home")</li>
+            <li>@Html.ActionLink("Ficha", "Index", "Ficha")</li>
+            <li>@Html.ActionLink("Tipo de Exercício", "Index", "Tipo")</li>
+            <li>@Html.ActionLink("Exercício", "Index", "Exercicio")</li>
+        </ul>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+    <footer class="footer" style="padding-left:50px">
+        <p>&copy; @DateTime.Now.Year - CardFitness</p>
+    </footer>
+
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <script type="text/javascript" charset="utf-8">
+                $(document).ready(function () {
+                    NotificaoSucesso('@Html.Raw((string)TempData["Sucesso"])');
+                });
+        </script>
+    }
+    @if (TempData["Aviso"] != null)
+    {
+        <script type="text/javascript" charset="utf-8">
+                $(document).ready(function () {
+                    NotificaoAviso('@Html.Raw((string)TempData["Aviso"])');
+                });
+        </script>
+    }
+    @if (TempData["Erro"] != null)
+    {
+        <script type="text/javascript" charset="utf-8">
+                $(document).ready(function () {
+                    NotificaoErro('@Html.Raw((string)TempData["Erro"])');
+                });
+        </script>
+    }
+    <environment include="Development">
+        <script src="~/js/jquery-1.10.2.js"></script>
+        <script src="~/js/bootstrap.js"></script>
+        <script src="~/js/script.js"></script>
+        <script src="~/js/site.js"></script>
+        <script src="~/Notify/js/bootstrap-notify.min.js"></script>
+    </environment>
+    <environment include="Staging,Production">
+        <script src="~/js/jquery-1.10.2.js"></script>
+        <script src="~/js/bootstrap.js"></script>
+        <script src="~/js/script.js"></script>
+        <script src="~/js/site.js"></script>
+        <script src="~/Notify/js/bootstrap-notify.min.js"></script>
+    </environment>
+</body>
+</html>

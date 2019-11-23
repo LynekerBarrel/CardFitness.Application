@@ -1,0 +1,69 @@
+﻿@model AdmSimposio.Models.EmailLembrete
+
+<script>
+    function EnviarEmailAC() {
+        $('#enviarEmail').attr("disabled", "disabled");
+        var url = '@Url.Action("EnviarEmail", "Home")';
+        $('#' + 'CorpoEmailEnviar').html(tinymce.get('CorpoEmailEnviar').getContent());
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: $('#Email').serialize(),
+            success: function (result) {
+                $('#enviarEmail').attr("disabled");
+                $("#ModalEmail").modal('hide')
+                if (result.erro) {
+                    NotificaoErro(result.message);
+                }
+                else {
+                    NotificaoSucesso(result.message);
+                }
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu uma inconsistência no sistema, entre em contato com suporte.");
+            }
+        });
+    }
+</script>
+<form asp-action="Email" id="Email">
+    @Html.HiddenFor(model => model.Codigos)
+    @Html.HiddenFor(model => model.Indicacao)
+    <div class="modal-body">
+        <div class="form-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <p style="margin-bottom:2px">Email será enviado para todos os participantes que já emitiram o boleto porem ainda não pagaram.</p>
+                    <p style="margin-bottom:2px">Foram selecionada(s) <b>@Model.qtdEmails</b> pessoa(s) como destinatário para enviar o email.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Assunto do e-mail</label>
+            <input asp-for="AssuntoEmail" id="TituloPropositura" onkeyup="textCounter(this, 'AssuntoEmail', 100);" class="form-control obrigatorio" type="text" />
+            <p style="color:#808080" id="AssuntoEmail">
+                Caracteres Restantes:
+                @if (!String.IsNullOrEmpty(Model.AssuntoEmail))
+                {
+                    <span>
+                        <b>@(100 - Model.AssuntoEmail.Length)</b>
+                    </span>
+                }
+                else
+                {
+                    <span><b>100</b></span>
+                }
+            </p>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Corpo do e-mail</label>
+            <textarea asp-for="CorpoEmail" id="CorpoEmailEnviar"></textarea>
+            @*<textarea asp-for="CorpoEmail" class="form-control obrigatorio" style="min-height: 200px" onkeyup="textCounter(this, 'counterJust', 3000);"></textarea>
+                <p style="color:#808080" id="counterJust">Caracteres Restantes: <b>3000</b></p>*@
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="button" id="enviarEmail" value="Enviar" class="btn btn-success" onclick="if (validaForm(this)) { EnviarEmailAC() } else { return false;}" />
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+        @*<input type="submit" value="Enviar" class="btn btn-success" onclick="if (!validaForm(this)) return false;" />*@
+    </div>
+</form>

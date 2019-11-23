@@ -1,0 +1,159 @@
+﻿.tag-Help {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #737373;
+}
+#profile-image {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #005aa8;
+}
+
+
+.profile-usertitle-name {
+    color: #005aa8;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 7px 0px 15px 0px;
+}
+
+
+.arquivoTrabalho {
+    text-align: center;
+    background: #cac7c7;
+    color: #455a64;
+    font-weight: bold;
+    height: 50px;
+    font-size: 20px;
+    padding: 8px 0;
+    cursor: pointer;
+    box-shadow: 0 0 0 0px rgba(0,0,0,0.1), 0 2px 3px rgba(0,0,0,.2);
+    border-radius: 4px;
+    display: table;
+    width: 100%;
+}
+
+    .arquivoTrabalho:hover {
+        box-shadow: 0 0 0 0 rgba(0,0,0,0.1), -1px -1px 10px rgba(0,0,0,.7);
+        color: #607D8B;
+    }
+
+.arquivoValidado {
+    background: #E0E0E0;
+    color: #004077;
+}
+
+.arquivoErro {
+    background: #E0E0E0;
+    color: #B71C1C;
+}
+.bg-siu {
+    color: white;
+    background-color: #004077;
+}
+.hiddenfile {
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+}
+
+.input-sucesso {
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(26,169,24,1);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(26,169,24,1);
+    box-shadow: 0px 0px 2px 0px rgba(26,169,24,1) !important;
+    border: solid 1px green !important;
+    color: green !important;
+}
+ul.timeline > li > .timeline-panel {
+    width: calc(85%) !important;
+    width: -moz-calc(85%) !important;
+    width: -webkit-calc(85%) !important;
+}
+.input-erro {
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(204,0,77,1);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(204,0,77,1);
+    box-shadow: 0px 0px 2px 0px rgba(204,0,77,1) !important;
+    border: solid 1px red !important;
+    color: rgba(204,0,77,1) !important;
+}   
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
+    background-color: #f5f5f5;
+}
+
+
+/* Custom page CSS
+            -------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+    padding: 60px 15px 0;
+}
+
+.footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+code {
+    font-size: 80%;
+}
+
+ul {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 1em;
+    text-indent: -1em;
+}
+
+.btn-siu {
+    color: #fff;
+    background-color: #004077;
+    border-color: #004077;
+}
+
+    .btn-siu:hover {
+        color: #fff;
+        background-color: #0069C3;
+        border-color: #0069C3;
+    }
+
+    .btn-siu:focus, .btn-siu.focus {
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+    }
+
+    .btn-siu.disabled, .btn-siu:disabled {
+        color: #fff;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-siu:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+    .show > .btn-siu.dropdown-toggle {
+        color: #fff;
+        background-color: #0062cc;
+        border-color: #005cbf;
+    }
+
+        .btn-siu:not(:disabled):not(.disabled):active:focus, .btn-siu:not(:disabled):not(.disabled).active:focus,
+        .show > .btn-siu.dropdown-toggle:focus {
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+        }

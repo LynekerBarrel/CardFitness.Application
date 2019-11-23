@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Adm Simpósio - @ViewData["Title"]</title>
+    <environment include="Development">
+        <link rel="SHORTCUT ICON" href="http://www.siu.univale.br/AdmSimposio/images/logo_siu.ico" />
+        <link href="~/dist/css/sb-admin-2.css" rel="stylesheet" />
+        <link href="~/vendor/metisMenu/metisMenu.min.css" rel="stylesheet" />
+        <link href="~/vendor/morrisjs/morris.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+        <link href="~/vendor/bootstrap/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/vendor/datatables/css/dataTables.bootstrap.css" rel="stylesheet" />
+        <link href="~/vendor/css/site.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap-fileinput/css/fileinput-rtl.min.css" rel="stylesheet" />
+        <link href="~/css/Simposio.css" rel="stylesheet" />
+        <link href="~/css/bootstrap-toggle.min.css" rel="stylesheet" />
+        <link href="~/multiple-select/multiple-select.css" rel="stylesheet" />
+        <link href="~/Notify/css/animate.css" rel="stylesheet" />
+        <link href="~/chart/Chart.css" rel="stylesheet" />
+        <link href="~/export/buttons.datatable.css" rel="stylesheet" />
+    </environment>
+    <environment include="Staging,Production">
+        <link rel="SHORTCUT ICON" href="http://www.siu.univale.br/AdmSimposio/images/logo_siu.ico" />
+        <link href="~/dist/css/sb-admin-2.css" rel="stylesheet" />
+        <link href="~/vendor/metisMenu/metisMenu.min.css" rel="stylesheet" />
+        <link href="~/vendor/morrisjs/morris.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+        <link href="~/vendor/bootstrap/css/bootstrap.css" rel="stylesheet" />
+        <link href="~/vendor/datatables/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+        <link href="~/vendor/css/site.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet" />
+        <link href="~/lib/bootstrap-fileinput/css/fileinput-rtl.min.css" rel="stylesheet" />
+        <link href="~/css/Simposio.css" rel="stylesheet" />
+        <link href="~/css/bootstrap-toggle.min.css" rel="stylesheet" />
+        <link href="~/multiple-select/multiple-select.css" rel="stylesheet" />
+        <link href="~/Notify/css/animate.css" rel="stylesheet" />
+        <link href="~/chart/Chart.css" rel="stylesheet" />
+        <link href="~/export/buttons.datatable.css" rel="stylesheet" />
+    </environment>
+
+</head>
+<body>
+    <div id="wrapper" class="toggled">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default custom navbar-static-top" role="navigation">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" style="color:white" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" style="color:white; margin-left:17px;" href="@Url.Action("Index","Home")">Adm Simpósio</a>
+            </div>
+            <!-- /.navbar-top-links -->
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <div id="Menu" class="nav"></div>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+        </nav>
+    </div>
+    <div id="page-wrapper" class="container-fluid" style="padding-bottom: 50px;">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <div class="modal fade" id="ModalVisualizador" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="min-width: 740px">
+            <div class="modal-content">
+                <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                    <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close" onclick="CloseIBoletoModal()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Visualizador - Simpósio</h4>
+                </div>
+                <div class="modal-body" style="font-family: Calibri; height:450px;width:100%;">
+                    <div id="loadingModal">
+                        <div class="spinner" style="margin: 18em auto !important;">
+                            <div class="rect1"></div>
+                            <div class="rect2"></div>
+                            <div class="rect3"></div>
+                            <div class="rect4"></div>
+                            <div class="rect5"></div>
+                        </div>
+                    </div>
+                    <iframe id="iVisualizador" frameBorder="0" style="height: 430px; width: 100%" src="about:blank" onload="checkLoaded()"></iframe>
+                   
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btnImprimir" class="btn btn-primary" disabled onclick="Imprimir()">Imprimir</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function checkLoaded() {
+            $('#loadingModal').hide();
+            $('#iVisualizador').show();
+            $('#btnImprimir').removeAttr('disabled');
+        }
+        //$(function () {
+        //    $('#iBoleto').load(function () {
+        //        $('#loadingModal').hide();
+        //        $('#iBoleto').show();
+        //    });
+        //});
+        function CloseIBoletoModal() {
+            var iframe = document.getElementById("iVisualizador");
+            iframe.src = 'about:blank';
+        }
+        function Imprimir() {
+            $("#iVisualizador").get(0).contentWindow.print();
+        }
+    </script>
+    <footer class="footer">
+        <img class="img-footer" src="~/images/FPF_DISGI.png" />
+    </footer>
+    <environment include="Development">
+        <script src="~/vendor/jquery/jquery.min.js"></script>
+        <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+        <script src="~/dist/js/sb-admin-2.js"></script>
+        <script src="~/vendor/raphael/raphael.min.js"></script>
+        <script src="~/vendor/morrisjs/morris.min.js"></script>
+        <script src="~/data/morris-data.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/Simposio.js"></script>
+        <script src="~/vendor/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="~/vendor/datatables/js/dataTables.bootstrap.min.js"></script>
+        <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
+        <script src="~/js/bootstrap-toggle.min.js"></script>
+        <script src="~/lib/jquery-mask/jquery.mask.js"></script>
+        <script src="~/js/SimposioValidate.js"></script>
+        <script src="~/multiple-select/multiple-select.js"></script>
+        <script src="~/Notify/js/bootstrap-notify.min.js"></script>
+        <script src="~/lib/multiselect-two-sides/dist/js/multiselect.min.js"></script>
+        <script src="~/export/buttons.flash.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf"></script>
+
+        <script type="text/javascript" src="dataTables.numericComma.js"></script>
+        <script src="~/export/buttons.html5.min.js"></script>
+        <script src="~/export/buttons.print.min.js"></script>
+        <script src="~/export/dataTables.buttons.min.js"></script>
+        <script src="~/export/dataTables.tableTools.min.js"></script>
+        <script src="~/export/jszip.min.js"></script>
+        <script src="~/export/pdfmake.min.js"></script>
+        <script src="~/export/vfs_fonts.js"></script>
+        <script src="~/chart/Chart.bundle.js"></script>
+        <script src="~/chart/Chart.js"></script>
+
+    </environment>
+    <environment include="Staging,Production">
+        <script src="~/vendor/jquery/jquery.min.js"></script>
+        <script src="~/vendor/metisMenu/metisMenu.min.js"></script>
+        <script src="~/vendor/raphael/raphael.min.js"></script>
+        <script src="~/vendor/morrisjs/morris.min.js"></script>
+        <script src="~/data/morris-data.js"></script>
+        <script src="~/dist/js/sb-admin-2.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/Simposio.js"></script>
+        <script src="~/vendor/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="~/vendor/datatables/js/dataTables.bootstrap.min.js"></script>
+        <script src="~/vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script src="~/lib/bootstrap-fileinput/js/fileinput.min.js"></script>
+        <script src="~/js/bootstrap-toggle.min.js"></script>
+        <script src="~/lib/jquery-mask/jquery.mask.js"></script>
+        <script src="~/js/SimposioValidate.js"></script>
+        <script src="~/multiple-select/multiple-select.js"></script>
+        <script src="~/Notify/js/bootstrap-notify.min.js"></script>
+        <script src="~/lib/multiselect-two-sides/dist/js/multiselect.min.js"></script>
+        <script src="~/export/buttons.flash.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/tabletools/2.2.2/swf/copy_csv_xls_pdf.swf"></script>
+
+        <script type="text/javascript" src="dataTables.numericComma.js"></script>
+        <script src="~/export/buttons.html5.min.js"></script>
+        <script src="~/export/buttons.print.min.js"></script>
+        <script src="~/export/dataTables.buttons.min.js"></script>
+        <script src="~/export/dataTables.tableTools.min.js"></script>
+        <script src="~/export/jszip.min.js"></script>
+        <script src="~/export/pdfmake.min.js"></script>
+        <script src="~/export/vfs_fonts.js"></script>
+        <script src="~/chart/Chart.bundle.js"></script>
+        <script src="~/chart/Chart.js"></script>
+        @*<script src="~/js/codemirror.min.js"></script>
+            <script src="~/js/xml.min.js"></script>
+            <script src="~/js/froala_editor.pkgd.min.js"></script>*@
+    </environment>
+</body>
+</html>

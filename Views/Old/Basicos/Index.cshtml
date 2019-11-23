@@ -1,0 +1,150 @@
+﻿@model AdmSimposio.Models.Basico
+@{
+    ViewData["Title"] = "Cadastros Básicos";
+}
+
+<div class="row" style="padding:30px 20px 20px 20px;">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a href="#" data-toggle="modal" data-target="#AjudaBasicos"><i class="fa fa-clipboard fa-fw"></i> Etapa/Categoria/Modalidade - Ajuda</a>
+        </div>
+        <!-- /.panel-heading -->
+
+        <div class="panel-loading">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+
+        <div id="PartialIndex">
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="AjudaBasicos" tabindex="-1" role="dialog" aria-labelledby="AjudaBasicos" aria-hidden="true">
+    <div class="modal-dialog" role="document" style=" height: 60%">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Ajuda - Cadastros básicos</h4>
+            </div>
+            <div class="modal-body" style="font-family: Calibri; height:450px;display:block; overflow-y:scroll;width:100%;">
+
+                <ul class="nav nav-tabs" id="TabBasicos">
+                    <li class="active">
+                        <a href="#principal" data-toggle="tab">Principal
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#AjudaEtapa" data-toggle="tab">Etapa</a>
+                    </li>
+                    <li>
+                        <a href="#AjudaCategoria" data-toggle="tab">Categoria</a>
+                    </li>
+                    <li>
+                        <a href="#AjudaModalidade" data-toggle="tab">Modalidade</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="principal">
+                        <div class="panel panel-default" style="margin-top:20px">
+                            <div class="panel-heading">
+                                No cadastro básico do simpósio, há três opções de cadastros, sendo elas Etapa, Categoria e Modalidade, onde deverá ser criada na seguinte ordem: Etapa > Categoria > Modalidade.
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Nesta tela, terá para cada uma dessas abas a opção de Criar ou Editar, tendo dois modelos para realizar essas funções, conforme demonstrado nas imagens abaixo:
+                            </div>
+                            <div class="panel-body">
+                                <img src="~/images/Ajuda/Cadastros Basicos/Basicos.png" class="img-responsive" style="width: 700px" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade in" id="AjudaEtapa">
+                        <div class="panel panel-default" style="margin-top:20px">
+                            <div class="panel-heading">
+                                Ao clicar em Novo ou em Opções > Editar na aba de etapa, será aberto um modal com os campos para serem preenchidos, todos so campos são obrigatórios!
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                As etapas devem ter datas sequenciais, por exemplo: Caso a primeira etapa tiver como data inicial 01/03/2019 e data final 05/04/2019, a data inicial da segunda etapa deverá ser 06/04/2019.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade in" id="AjudaCategoria">
+                        <div class="panel panel-default" style="margin-top:20px">
+                            <div class="panel-heading">
+                                Ao criar uma categoria é necessário preencher todos os campos obrigatórios para salvar, e poderá escolher para quais etapas aquela categoria irá contemplar, clicando no botão “ + Nova etapa e valor”. Poderá também excluir alguma etapa cadastrada, clicando no ícone da lixeira.
+                            </div>
+                            <div class="panel-body">
+                                <img src="~/images/Ajuda/Cadastros Basicos/Categoria.png" class="img-responsive" style="width: 700px" />
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                Não será permitido excluir todas as etapas, a categoria deverá ter pelo menos uma etapa informada.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade in" id="AjudaModalidade">
+                        <div class="panel panel-default" style="margin-top:20px">
+                            <div class="panel-heading">
+                                Ao criar uma modalidade é necessário preencher todos os campos obrigatórios para salvar, e poderá escolher para qual categoria esta modalidade será vinculada, ao escolher, irá aparecer as etapas para qual essa categoria está cadastrada, dando assim a possibilidade de informar o valor desta modalidade para cada etapa.
+                            </div>
+                            <div class="panel-body">
+                                <img src="~/images/Ajuda/Cadastros Basicos/Modalidade.png" class="img-responsive" style="width: 700px" />
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                              <b>Importante: </b>Não será permitido excluir uma modalidade que já tenha algum congressista inscrito nela.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok, entendi!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    window.onload = function () {
+            $.get('@Url.Content("~/Basicos/MenuPrincipal")', function (content) {
+            $("#Menu").html(content);
+        });
+        CallForm();
+    }
+    function CallForm() {
+        $('.panel-loading').show();
+        //await sleep(1000);
+        var url = '@Url.Action("LoadIndex", "Basicos")';
+        console.log("url>" + url);
+        console.log(url);
+        $.ajax({
+            url: url,
+            type: 'POST',
+            //data: $('#Propositura').serialize(),
+            success: function (result) {
+                $('.panel-loading').hide();
+                $('#PartialIndex').empty();
+                $('#PartialIndex').html(result);
+            },
+            error: function (xhr, status) {
+                alert(status);
+            }
+        });
+    }
+
+</script>

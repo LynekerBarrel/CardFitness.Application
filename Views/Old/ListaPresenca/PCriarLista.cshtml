@@ -1,0 +1,55 @@
+﻿@model AdmSimposio.Models.ListaPresenca
+
+<form asp-action="CriarLista" id="ListaPresenca">
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label">Local</label>
+            <input asp-for="Local" class="form-control obrigatorio" placeholder="Ex.: Sala ED 202" />
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label asp-for="DataInicial" class="control-label">Data Inicial</label>
+                    <input asp-for="DataInicial" class="form-control obrigatorio" />
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label asp-for="DataFinal" class="control-label">Data Final</label>
+                    <input asp-for="DataFinal" class="form-control obrigatorio" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input id="btnCriar" type="button" value="Criar" class="btn btn-success" onclick="CriarLista()" />
+        <button id="btnCancelar" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close" onclick="FecharModalCriar()">Cancelar</button>
+    </div>
+</form>
+
+<script>
+    function FecharModalCriar() {
+        $('#ModalCriarLista').modal('hide');
+        $('#ListaPresenca').remove();
+    }
+     function CriarLista() {
+         if (validaForm()){
+             $("#btnCriar").attr("disabled", "disabled");
+             $("#btnCancelar").attr("disabled", "disabled");
+            var url = '@Url.Action("CriarLista", "ListaPresenca")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: $('#ListaPresenca').serialize(),
+                success: function (result) {
+                    $("#btnCriar").removeAttr("disabled");
+                    $("#btnCancelar").removeAttr("disabled");
+                        location.reload(true)
+                },
+                error: function (xhr, status) {
+                    NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+                }
+            });
+        }
+    }
+</script>

@@ -1,0 +1,44 @@
+﻿@model AdmSimposio.Models.EmailConvitePropositura
+
+
+<script src="~/js/Simposio.js"></script>
+<script src="~/Notify/js/bootstrap-notify.min.js"></script>
+<form asp-action="Mail" id="Mail">
+    @Html.HiddenFor(x => x.NomeProponente)
+    @Html.HiddenFor(x => x.EmailDestinatario)
+    @Html.HiddenFor(x => x.TituloPropositura)
+    @Html.HiddenFor(x => x.AtividadeEscolhida)
+    <div class="modal-body">
+        <h4>Não foi possível encontrar o email inserido em nossa base de dados.</h4>
+        <h5>Deseja enviar um convite de cadastro para @Html.DisplayFor(Model => Model.EmailDestinatario)? </h5>
+        <h5>Uma vez que seu convidado realizar o registro você poderá inclui-lo(a) na lista de autores desta propositura.</h5>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+        <input onclick="EnviarEmail()" data-dismiss="modal" value="Enviar convite" class="btn btn-success" />
+    </div>
+</form>
+<script>
+    function EnviarEmail() {
+        var url = "EnviarMail";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: $('#Mail').serialize(),
+            success: function (result) {
+
+                if (result.erro) {
+                    NotificaoErro(result.message);
+                }
+                else {
+                    NotificaoSucesso(result.message);
+                }
+            },
+            error: function (xhr, status) {
+                alert(status);
+            }
+        });
+    }
+</script>
+
+

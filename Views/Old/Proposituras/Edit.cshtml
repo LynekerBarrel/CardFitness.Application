@@ -1,0 +1,176 @@
+﻿
+@{
+    ViewData["Title"] = "Editar";
+}
+<script src="~/multiple-select/jquery.min.js"></script>
+
+<div class="row" style="padding:30px 20px 20px 20px;">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a href="#" data-toggle="modal" data-target="#AjudaProposituraEditar"><i class="fa fa-edit fa-fw"></i> Editar Propositura - Ajuda</a>
+            <div style="float:right">
+                <a href="@Url.Action("Index","Proposituras", new { Ambiente = "Proposituras"})"><i class="fa fa-arrow-left fa-fw"></i>Voltar</a>
+            </div>
+
+        </div>
+        <div class="panel-loading">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+
+        <div id="BodyPropositura">
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="AjudaProposituraEditar" tabindex="-1" role="dialog" aria-labelledby="AjudaSimposio" aria-hidden="true">
+    <div class="modal-dialog" role="document" style=" height: 60%">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Ajuda - Propositura</h4>
+            </div>
+            <div class="modal-body" style="font-family: Calibri; height:450px;display:block; overflow-y:scroll;width:100%;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Para inserir um(a) novo(a) autor(a) será necessário inserir um email no campo "Coautores" e em seguida clicar em "Procurar". Segue imagem:
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Propositura/Create/AdicionarAutor.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;">
+                        Se o email inserido estiver cadastrado em nossa base, o coautor será adicionado na lista de autores da sua propositura. Segue imagem:
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Propositura/Create/ExibirAutorAdicionado.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;">
+                        Se o email inserido não estiver cadastrado em nossa base, você terá a opção de enviar um convite para o email inserido. Quando seu convidado aceitar o convite você poderá adicioná-lo na lista de autores de sua propositura.. Segue imagem:
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Propositura/Create/Convite.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;">
+                        <p> Para deletar um(a) autor(a) basta clicar no botão “Opções” referente ao registro desejado. Uma caixa de opções irá se abrir, clique em "Excluir".</p>
+                        <p> <b>Importante: </b>A exclusão só terá validade se você salvar as informações da propositura. Para isso, clique em "Atualizar". </p>
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Propositura/Create/ExcluirAutor.png" class="img-responsive" style="width: 700px" />
+                    </div>
+
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <p>Em determinados campos, tais como "Curso de interesse" e "Àrea de conhecimento" você terá a opção de selecionar multiplas opções. Haverá um campo onde você poderá filtrar dentre as opções, bastando inserir valores neste campo para que as informações da lista sejam filtradas. Segue imagem:</p>
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Propositura/Create/Selecionar.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                    <div class="panel-heading" style="border-top: 1px solid #ddd;">
+                        <p> É possível que a qualquer momento você selecione a opção "Selecionar Todos". Recomendamos que faça isso somente quando seus dados estiverem filtrados de acordo com seu interesse. Segue imagem:</p>
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Propositura/Create/Filtros.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <p>Ao inserir o dados nos campos "Titulo da Propositura" e "Resumo da Propositura" Fique atento com o número limite de caracteres disponíveis, uma vez que você tenha atingido esse limite não será possível inserir mais nenhum conteúdo nestes campos. Segue imagem:</p>
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Propositura/Create/TituloResumo.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok, entendi!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*Documentação para multiple-select: http://wenzhixin.net.cn/p/multiple-select/docs/index.html#methods*@
+
+<script type="text/javascript" charset="utf-8">
+    @*window.onload = function () {
+            $.get('@Url.Content("~/Proposituras/MenuCongressista")', function (content) {
+            $("#Menu").html(content);
+        });
+        CallForm();
+    }
+
+    function CallForm() {
+        $('.panel-loading').show();
+        //await sleep(1000);
+        var url = "LoadEdit";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: $('#Propositura').serialize(),
+            success: function (result) {
+                $('.panel-loading').hide();
+                $('#BodyPropositura').empty();
+                $('#BodyPropositura').html(result);
+            },
+            error: function (xhr, status) {
+                alert(status);
+            }
+        });
+    }*@
+
+    var Ambiente = '@TempData["Ambiente"]';
+    console.log("ambiente 1:" + Ambiente);
+    window.onload = function () {
+        $.get('@Url.Content("~/Proposituras/MenuPrincipal")' + "?Ambiente=Proposituras", function (content) {
+            $("#Menu").html(content);
+        });
+        CallForm(Ambiente);
+    }
+    function CallForm(Ambiente) {
+        $('.panel-loading').show();
+        switch (Ambiente) {
+            case "Proposituras":
+                //var url = ((Ambiente == "Proposituras") ? '@Url.Action("LoadIndex", "Proposituras")' : '@Url.Action("LoadConvite", "Proposituras")');
+                var url = '@Url.Action("LoadIndex", "Proposituras")';
+                break;
+            case "ConviteEmail":
+                var url = '@Url.Action("LoadConviteEmail", "Proposituras")';
+                break;
+            case "ConviteProponente":
+                var url = '@Url.Action("LoadConvite", "Proposituras")';
+                break;
+            case "LoadEdit":
+                var url = '@Url.Action("LoadEdit", "Proposituras")';
+                break;
+            default:
+                 var url = '@Url.Action("LoadIndex", "Proposituras")';
+                break;
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function (result) {
+                $('.panel-loading').hide();
+                $('#BodyPropositura').empty();
+                $('#BodyPropositura').html(result);
+            },
+            error: function (xhr, status) {
+                alert(status);
+            }
+        });
+    }
+
+</script>

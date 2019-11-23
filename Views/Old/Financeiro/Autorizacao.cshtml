@@ -1,0 +1,65 @@
+﻿@model AdmSimposio.Models.InscricaoCategoriaModeloRelatorio
+@using AdmSimposio.Models.CrossCutting
+@{
+    ViewData["Title"] = "Cadastrados";
+    Layout = null;
+}
+<link href="~/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+<link href="~/vendor/css/site.css" rel="stylesheet" />
+<link href="~/Notify/css/animate.css" rel="stylesheet" />
+<link href="~/css/Simposio.css" rel="stylesheet" />
+<link href="~/multiple-select/multiple-select-Externo.css" rel="stylesheet" />
+<html moznomarginboxes mozdisallowselectionprint>
+<body>
+    <div class="container">
+        <div class="container-fluid">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading text-center">
+                        <h2>Autorização para estorno</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div style="text-align: justify;text-justify: inter-word; font-size:15px;">
+                            <p>
+                                Autorizo <b>  @Model.Pessoa.Pessoa.Nome </b> a receber a quantia supra de <b>@Model.Estorno.First().ValorPercentualFormatado(Model.Valor)</b> pelo motivo registrado abaixo:
+                                <div class="form-group">
+                                    <div class="panel-default">
+                                        <div class="panel-heading" style="border: 1px solid #ddd;">
+                                            @Model.Estorno.First().Comentario
+                                        </div>
+                                    </div>
+                                </div>
+                            </p>
+                        </div>
+                        <div style="text-align: right;text-justify: inter-word; font-size:15px;">
+                            <p>
+                                @{
+                                    string[] Mes = { "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro" };
+
+                                    <span>Governador Valadares - @Model.Estorno.First().DataEstorno.Day de @Mes[Model.Estorno.First().DataEstorno.Month - 1] de @Model.Estorno.First().DataEstorno.Year</span>
+                                }
+                            </p>
+
+                        </div>
+                        <div style="text-align: center;text-justify: inter-word; font-size:15px;">
+                            <br />
+                            <p>
+                                _______________________________________
+                            </p>
+                            <p>
+                                @Session.Get("AdmSimposio.Models.PessoaModelo", "AdmSimposio/Pessoa").Pessoa.Nome
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
+
+

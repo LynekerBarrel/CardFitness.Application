@@ -1,0 +1,123 @@
+﻿@model AdmSimposio.Models.Categoria
+@using AdmSimposio.CrossCutting
+
+<script src="~/js/SimposioValidate.js"></script>
+<script type="text/javascript">
+    var urlAdicionarEtapa = '@Url.Action("AdicionarEtapa", "Basicos")';
+
+    var RemovEtapa = function (strIndex) {
+        var urlRemoverEtapa = '@Url.Action("RemoverEtapa", "Basicos", new { index = "ID" })'.replace("ID", strIndex);
+        RemoverEtapa(urlRemoverEtapa);
+    }
+
+    var ExcluirCategoria = function (CodCategoria) {
+        if (ConfirmarOnClick("Deseja realmente excluir esta categoria?")) {
+            var url = '@Url.Action("ExcluirCategoria", "Basicos", new { index = "CodCategoria" })'.replace("CodCategoria", CodCategoria);
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: $('#EditarCategoria').serialize(),
+                success: function (result) {
+                    if (result.erro) {
+                        NotificaoErro(result.message);
+                        $('#ModalEditarCategoria').modal("toggle");
+                    }
+                    else {
+                        location.href = '@Url.Action("Index","Basicos")';
+                        NotificaoSucesso(result.message);
+                    }
+                },
+                error: function (xhr, status) {
+                    alert(status);
+                    ReloadForm(xhr);
+                }
+            });
+        }
+    };
+
+</script>
+
+<div class="Partialmodal">
+    <form asp-action="EditarCategoria" id="EditarCategoria">
+        <div class="modal-body">
+            @Html.HiddenFor(model => model.CodCategoria)
+            @Html.HiddenFor(model => model.CodSimposio)
+            @Html.HiddenFor(model => model.Simposio.TituloReduzido)
+            <div id="response"></div>
+            <div class="form-group text-center">
+                <h4>@Html.DisplayFor(model => model.Simposio.TituloReduzido)</h4>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-8">
+                    <label asp-for="DescCategoria" class="control-label"></label>
+                    <input asp-for="DescCategoria" class="form-control obrigatorio" placeholder="Ex.: Apresentar Trabalho" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <label asp-for="CargaHoraria" class="control-label"></label>
+                    <input asp-for="CargaHoraria" class="form-control obrigatorio" placeholder="Ex.: 40" type="number" />
+                    <span class="descDisable-Help">Utilizada para o certificado.</span>
+                </div>
+            </div>
+            <div class="form-inline row" style="padding-bottom:5px">
+                <div class="form-group col-sm-8">
+                    <label class="control-label">Escolha a etapa</label>
+                </div>
+            </div>
+
+            <div class="row" id="RowValor">
+                @{ foreach (var item in Model.etapasCategorias)
+                    {
+                        @Html.HiddenFor(x => x.etapasCategorias[Model.etapasCategorias.IndexOf(item)].CodCategoria)
+                        @Html.HiddenFor(x => x.etapasCategorias[Model.etapasCategorias.IndexOf(item)].CodEtapaCategoria)
+                        <div>
+                            @if (Model.Etapas.Count > 1)
+                            {
+                                <div class="form-group col-sm-11">
+                                    @Html.DropDownListFor(x => x.etapasCategorias[Model.etapasCategorias.IndexOf(item)].CodEtapa, new SelectList(Model.Etapas, "CodEtapa", "DescEtapa"), new { @class = "form-control" })
+                                </div>
+                                <div class="col-sm-1">
+                                    <div class="form-group pull-right">
+
+                                        @if (Model.etapasCategorias.Count <= 1)
+                                        {
+                                            <a href="#" class="btn btn-default" disabled="disabled"><i class="fa fa-trash"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" onclick="RemovEtapaCriar(@(Model.etapasCategorias.IndexOf(item)))" class="btn btn-default"><i class="fa fa-trash"></i></a>
+                                        }
+                                        @*<button id="@("remover_"+ Model.etapasCategorias.IndexOf(item))" class="btn btn-default" type="button"><i class="fa fa-trash"></i></button>*@
+
+
+                                    </div>
+                                </div>
+
+                            }
+                            else
+                            {
+                                <div class="form-group col-sm-12">
+                                    @Html.DropDownListFor(x => x.etapasCategorias[Model.etapasCategorias.IndexOf(item)].CodEtapa, new SelectList(Model.Etapas, "CodEtapa", "DescEtapa"), new { @class = "form-control" })
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+            </div>
+            @if (Model.Etapas.Count > Model.etapasCategorias.Count)
+            {
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <a href="#" onclick="AdicionarEtapa()" class="btn btn-default btn-block"><i class="fa fa-plus add-Valor"> Nova etapa e valor</i></a>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="modal-footer">
+            <input type="submit" value="Atualizar" class="btn btn-success" onclick="if ( ! validaForm(this)) return false;" />
+            <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>   @if (VerificarPerfil.Validar("AdmSimposio/Basicos/CategoriaExcluir"))
+            {
+                <button type="button" class="btn btn-danger" onclick="ExcluirCategoria(@Model.CodCategoria)">Excluir</button>
+            }
+        </div>
+    </form>
+</div>

@@ -1,0 +1,31 @@
+﻿@model AdmSimposio.Models.Propositura
+
+
+<form asp-action="Rejeitar">
+    <div class="modal-body">
+        @Html.HiddenFor(model => model.CodPropositura)
+        @Html.HiddenFor(model => model.CodSimposio)
+        @Html.HiddenFor(model => model.CodAtividadeProposta)
+        @Html.HiddenFor(model => model.DataCriacao)
+        @Html.HiddenFor(model => model.ResumoPropositura)
+        @Html.HiddenFor(model => model.TituloPropositura)
+        <div class="form-group">
+            <label class="control-label">Proponente</label>:
+            @Html.DisplayFor(x => x.ProposituraAutores[0].Pessoa.Nome)
+        </div>
+        <div class="form-group">
+            <label class="control-label">Título Propositura</label>:
+            @Html.DisplayFor(x => x.TituloPropositura)
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Justificativa" class="control-label"></label>
+            <textarea asp-for="Justificativa" class="form-control obrigatorio" onkeyup="textCounter(this, 'counterJust', 1400);"></textarea>
+            <p style="color:#808080" id="counterJust">Caracteres Restantes: <b>1400</b></p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+        <input type="submit" value="Confirmar" class="btn btn-success" onclick="if ( ! validaForm(this)) return false;" />
+    </div>
+</form>

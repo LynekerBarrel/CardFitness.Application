@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Cadastrados";
+}
+
+<div class="row" style="padding:30px 20px 20px 20px;">
+    <div class="panel panel-default panel-loading">
+        @*<div class="panel-heading">
+            &nbsp;
+        </div>*@
+        <!-- /.panel-heading -->
+        <div>
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="PartialIndex"></div>
+    @*<div class="panel panel-default">
+        <div class="panel-heading">
+            <a data-toggle="modal" data-target="#exampleModal"><i class="@Html.Raw((string)ViewBag.HeaderIcon) fa-fw"></i> Propositura - Ajuda</a>
+        </div>
+        <div id="PartialIndex">
+        </div>
+    </div>*@
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+    var Ambiente = '@TempData["Ambiente"]';
+    window.onload = function () {
+        $.get('@Url.Content("~/Financeiro/MenuPrincipal")' + "?Ambiente=" + Ambiente, function (content) {
+            $("#Menu").html(content);
+        });
+        CallForm(Ambiente);
+    }
+    function CallForm(Ambiente) {
+        $('.panel-loading').show();
+        switch (Ambiente) {
+            case "Estorno":
+                var url = '@Url.Action("LoadEstorno", "Financeiro")';
+                break;
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function (result) {
+                if (result.unauthorized) {
+                    location.href = result.redirect;
+                }
+                else {
+                    $('.panel-loading').hide();
+                    $('#PartialIndex').empty();
+                    $('#PartialIndex').html(result);
+                }
+            },
+            error: function (xhr, status) {
+                alert(status);
+            }
+        });
+    }
+</script>

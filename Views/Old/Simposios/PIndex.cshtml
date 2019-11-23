@@ -1,0 +1,210 @@
+﻿@model IEnumerable<AdmSimposio.Models.Simposio>
+@using AdmSimposio.CrossCutting
+<script src="~/js/Simposio.js"></script>
+<script src="~/vendor/datatables/js/jquery.dataTables.min.js"></script>
+<script src="~/vendor/datatables/js/dataTables.bootstrap.min.js"></script>
+<script src="~/js/SimposioValidate.js"></script>
+
+@if (TempData["Sucesso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoSucesso('@Html.Raw((string)TempData["Sucesso"])');
+        });
+    </script>
+}
+@if (TempData["Aviso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoAviso('@Html.Raw((string)TempData["Aviso"])');
+        });
+    </script>
+}
+@if (TempData["Erro"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoErro('@Html.Raw((string)TempData["Erro"])');
+        });
+    </script>
+}
+
+@*<script type="text/javascript" charset="utf-8">
+        var LoadEdit = function (CodSimposio) {
+            var Url = '@Url.Action("Index","Simposios", new { Ambiente = "Editar", CodSimposio = "Codigo" })'.replace("Codigo", CodSimposio).replace("&amp;", "&");
+            $.ajax({
+                url: Url,
+                type: 'POST',
+                success: function (result) {
+                    $('#PartialIndexHidden').empty();
+                    $('#PartialIndexHidden').html(result);
+                },
+                error: function (xhr, status) {
+                    alert(status);
+                }
+            });
+        }
+    </script>*@
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a href="#" data-toggle="modal" data-target="#AjudaSimposio"><i class="fa fa-clipboard fa-fw"></i> Simpósio - Ajuda</a>
+        <div style="float:right">
+            @if (VerificarPerfil.Validar("AdmSimposio/Simposios/Criar"))
+            {
+                <a asp-action="Criar"> <i class="fa fa-plus fa-fw"></i>Novo</a>
+            }
+        </div>
+
+    </div>
+    <!-- /.panel-heading -->
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" style="width:100%" id="tbSimposio">
+                <thead>
+                    <tr>
+                        <td>
+                            @Html.DisplayNameFor(model => model.CodSimposio)
+                        </td>
+                        <th>
+                            @Html.DisplayNameFor(model => model.TituloSimposio)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DataInicioSimposio)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DataFimSimposio)
+                        </th>
+                        <th> Situação</th>
+                        <th> Opções</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr class="odd gradeX">
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CodSimposio)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.TituloReduzido)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.DataInicioSimposio)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.DataFimSimposio)
+                                    </td>
+                                    <td style="text-align:center; vertical-align:middle">
+                                        @if (item.Ativo)
+                                        {
+                                            <span class="label label-success" style="font-weight:lighter; font-size:85%; padding-top:4px">Ativo</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="label label-danger" style="font-weight:lighter; font-size:85%; padding-top:4px">Inativo</span>
+                                        }
+                                    </td>
+                                    <td style="text-align:center; vertical-align:middle">
+                                        @if (VerificarPerfil.Validar("AdmSimposio/Simposios/Atualizar"))
+                                        {
+                                            <div class="dropup">
+                                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="padding-top:2%; padding-bottom:2%">
+                                                    Opções
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-right">
+                                                    @if (item.Ativo)
+                                                    {
+                                                        <li><a href="@Url.Action("Index", "Basicos")"><span class="fa fa-clipboard fa-fw"></span>  Etapa/Categoria/Modalidade</a></li>
+
+                                                        @if (VerificarPerfil.Validar("AdmSimposio/Simposios/Ativar/Desativar"))
+                                                        {
+                                                            <li><a href="@Url.Action("Desativar", new { item.CodSimposio })" class="confirmar" data-confirm="Você está desativando o @item.TituloReduzido, confirma essa escolha?"><span class="fa fa-times-circle fa-fw"></span>  Desativar</a></li>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @if (VerificarPerfil.Validar("AdmSimposio/Simposios/Ativar/Desativar"))
+                                                        {
+                                                            <li><a href="@Url.Action("Ativar", new { item.CodSimposio })" class="confirmar" data-confirm="Você está ativando o @item.TituloReduzido, confirma essa escolha?"><span class="fa fa-check-circle fa-fw"></span>  Ativar</a></li>
+                                                        }
+                                                    }
+                                                    <li><a href="@Url.Action("Editar", new { item.CodSimposio })"><span class="fa fa-edit fa-fw"></span>  Editar</a></li>
+                                                </ul>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="dropup">
+                                                <button class="btn btn-default dropdown-toggle" disabled type="button" data-toggle="dropdown" style="padding-top:2%; padding-bottom:2%">
+                                                    Opções
+                                                    <span class="caret"></span>
+                                                </button>
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="AjudaSimposio" tabindex="-1" role="dialog" aria-labelledby="AjudaSimposio" aria-hidden="true">
+    <div class="modal-dialog" role="document" style=" height: 60%">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Ajuda - Simpósio</h4>
+            </div>
+            <div class="modal-body" style="font-family: Calibri; height:450px;display:block; overflow-y:scroll;width:100%;">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Para criar uma nova propositura, basta clicar no link que está no canto superior direito, conforme demonstrado na imagem.
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Simposio/Criar.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <p> Para editar uma propositura já existente, basta clicar no botão “Opções” referente ao simpósio desejado que irá abrir uma caixa de opções, após isso clique em Editar, conforme demonstrado na imagem.</p>
+                        <p><b>Importante: </b> Para editar uma propositura já existente, basta clicar no botão “Opções” referente ao simpósio desejado que irá abrir uma caixa de opções, após isso clique em Editar, conforme demonstrado na imagem.</p>
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Simposio/Editar.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Para todas as outras funcionalidades do sistema ADM Simpósio será considerado o simpósio que está ativo no momento, para deixar o simpósio ativo, basta entrar na edição do simpósio, como demonstrado na imagem acima, e na tela de edição, clicar em inativo, que irá mudar para ativo, e então salvar, conforme demonstrado na tela abaixo.
+                    </div>
+                    <div class="panel-body">
+                        <img src="~/images/Ajuda/Simposio/Ativar.png" class="img-responsive" style="width: 700px" />
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <b>Importante: </b> Poderá ter apenas um simpósio ativo, portanto caso tiver mais de um simpósio cadastrado, e for necessário ativar um simpósio que não seja o que está ativa atualmente, será necessário desativar.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok, entendi!</button>
+            </div>
+        </div>
+    </div>
+</div>

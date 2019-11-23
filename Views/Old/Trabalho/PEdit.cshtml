@@ -1,0 +1,751 @@
+﻿@model AdmSimposio.Models.Trabalho
+
+<script src="~/js/SimposioValidate.js"></script>
+<script src="~/lib/jquery-mask/jquery.mask.js"></script>
+
+@if (TempData["Sucesso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoSucesso('@Html.Raw((string)TempData["Sucesso"])');
+        });
+    </script>
+}
+@if (TempData["Aviso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoAviso('@Html.Raw((string)TempData["Aviso"])');
+        });
+    </script>
+}
+@if (TempData["Erro"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoErro('@Html.Raw((string)TempData["Erro"])');
+        });
+    </script>
+}
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        if ($("#CodInstituicaoEnsino").val() != "99999") {
+            $("#OutrosInstituicaoEnsino").hide();
+            $("#OutrosInstituicaoEnsino").val("");
+        }
+        else {
+            $("#OutrosInstituicaoEnsino").show();
+        }
+        $('[data-toggle="tooltip"]').tooltip();
+
+        $("select#CodTipoTrabalhoAutor").prop('selectedIndex', 0);
+
+
+        $('form').submit(function () {
+            $('.ignore-desactivated').each(function () {
+                $(this).children().each(function () {
+                    $(this).removeAttr('disabled');
+                });
+            })
+        })
+    });
+
+    //$(function () {
+    //    $('#msApoio').change(function () {
+    //    }).multipleSelect({
+    //        filter: true,
+    //        width: '100%',
+    //        placeholder: 'Selecione...'
+    //    });
+    //});
+
+    //$(function () {
+    //    $('#msBolsa').change(function () {
+    //    }).multipleSelect({
+    //        filter: true,
+    //        width: '100%',
+    //        placeholder: 'Selecione...'
+    //    });
+    //});
+</script>
+@if (TempData["AutorNotFound"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+
+        $.ajax({
+            url: '@Url.Action("CriarBase","Trabalho")',
+            type: 'POST',
+            success: function (result) {
+                $('#PartialCriarBase').html(result);
+                $('#ModalCriarBase').modal({ backdrop: 'static', keyboard: false});
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu uma inconsistência no sistema, entre em contato com suporte.");
+            }
+        });
+    </script>
+}
+<div class="panel-body">
+    <form asp-action="Edit" id="Trabalho" enctype="multipart/form-data">
+        @Html.HiddenFor(x => x.CodTrabalho)
+        @Html.HiddenFor(x => x.CodSituacaoTrabalho)
+        @Html.HiddenFor(x => x.DataCriacao)
+        @Html.HiddenFor(x => x.QtdMaxCoautores)
+        @Html.HiddenFor(x => x.TituloPersistir)
+        @Html.HiddenFor(x => x.PalavraChavePersistir)
+        @Html.HiddenFor(x => x.IntroducaoPersistir)
+        @Html.HiddenFor(x => x.ObjetivoPersistir)
+        @Html.HiddenFor(x => x.MetodologiaPersistir)
+        @Html.HiddenFor(x => x.ResultadoPersistir)
+        @Html.HiddenFor(x => x.ConclusaoPersistir)
+        @Html.HiddenFor(x => x.NomeArquivoCompletoPersistir)
+        @Html.HiddenFor(x => x.ArquivoCompletoPersistir)
+        @Html.HiddenFor(x => x.DiscussaoPersistir)
+        @Html.HiddenFor(x => x.AlunoAtivo)
+
+        @Html.HiddenFor(x => x.CodCurso)
+        @Html.HiddenFor(x => x.CodInstituicaoEnsino)
+        @Html.HiddenFor(x => x.OutrosInstituicaoEnsino)
+        @Html.HiddenFor(x => x.CodSimposioTematico)
+
+
+        @Html.HiddenFor(x => x.CodFormacao)
+        @Html.HiddenFor(x => x.CodModalidade)
+        @Html.HiddenFor(x => x.CodApoioJoined)
+        @Html.HiddenFor(x => x.OutrosApoio)
+        @Html.HiddenFor(x => x.CodInscricaoSimposio)
+
+
+
+        <div class="col-sm-12 autores">
+            <div class="form-group">
+                <div class="col-sm-12" style="margin-top: 15px">
+                    <label class="control-label">Lista de autores</label>
+                </div>
+                <div class="col-sm-12">
+                    <div class="table-responsive" style="background-color:#fff;">
+                        <table class="table table-striped table-bordered" style="margin-bottom:0px">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Nome
+                                    </th>
+                                    <th>
+                                        Email
+                                    </th>
+                                    <th>
+                                        Tipo
+                                    </th>
+                                    <th>
+                                        Opções
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{
+                                    if (Model != null)
+                                    {
+                                        foreach (var item in Model.Autores)
+                                        {
+                                            @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].CodPessoa)
+                                            @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].Nome)
+                                            @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].Email)
+                                            @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].DescTipoTrabalhoAutor)
+                                            @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].CodTipoTrabalhoAutor)
+                                            @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].EmailEnviado)
+                                            @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].DataEnvioEmail)
+                                            @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].Editavel)
+                                            <tr class="odd gradeX">
+
+
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Nome)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Email)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.DescTipoTrabalhoAutor)
+                                                </td>
+                                                <td style="text-align:center; vertical-align:middle">
+
+                                                    <div class="dropup">
+                                                        @if (@item.CodTipoTrabalhoAutor != 1)
+                                                        {
+                                                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="margin:-5px; padding-top:2%; padding-bottom:2%">
+                                                                Opções
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button disabled class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="margin:-5px; padding-top:2%; padding-bottom:2%">
+                                                                Opções
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                        }
+                                                        <ul class="dropdown-menu dropdown-menu-right">
+                                                            @if (item.Editavel)
+                                                            {
+                                                                <li>
+                                                                    <a href="#" onclick="EditarAutor(@item.CodPessoa)">
+                                                                        <span class="fa fa-edit fa-fw"></span> Editar
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            <li>
+                                                                <a href="#" onclick="DeletarAutor(@item.CodPessoa)">
+                                                                    <span class="fa fa-trash fa-fw"></span> Excluir
+                                                                </a>
+                                                            </li>
+
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @*<div class="col-sm-12" style="margin-top: 15px">
+                    <div class="col-sm-7" style="padding-left:0px">
+                        <label class="control-label">Incluir novo autor</label>
+                    </div>
+                    <div class="col-sm-3">
+                        <label class="control-label">Tipo</label>
+                    </div>
+                    <div class="col-sm-2">
+                    </div>
+                </div>
+                <div class="col-sm-7">
+                    <div class="form-group">
+
+                        @Html.TextBoxFor(model => model.CPFCoautor, new { data_placement = "top", data_toggle = "tooltip", @title = "Infomre o CPF e busque o coautor desejado, caso coautor não encontrado na nossa base de dados, você poderá cadastra-lo.", @class = "form-control", data_mask = "000.000.000-00", placeholder = "Informe o CPF da pessoa que você deseja convidar para compartilhar este trabalho.", type = "text" })
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        @Html.DropDownListFor(x => x.CodTipoTrabalhoAutor, new SelectList(Model.TipoTrabalhoAutores, "CodTipoTrabalhoAutor", "DescTipoTrabalhoAutor"), "Selecione...", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <div class="form-group">
+                        <a onclick="ValidarEmailTrabalho()" class="btn btn-success ProcurarCoautor" style="width:100%;">Procurar</a>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                <label asp-for="CodInstituicaoEnsino" class="control-label">Instituição de Ensino</label>
+                <div class="panel panel-default" style="margin-bottom:0px !important">
+                    <div class="panel-body" style="padding: 5px 15px 5px 15px !important; background-color: #eee; border:1px solid #ccc">
+                        @if (!string.IsNullOrEmpty(Model.OutrosInstituicaoEnsino))
+                        {
+                            @Html.DisplayFor(x => x.OutrosInstituicaoEnsino)
+                        }
+                        else
+                        {
+                            @foreach (var item in Model.InstituicaoEnsinos)
+                            {
+                                if (item.CodInstituicaoEnsino == Model.CodInstituicaoEnsino)
+                                {
+                                    @Html.DisplayFor(x => item.DescInstituicaoEnsino)
+                                }
+                            }
+                        }
+                        @*@Html.DropDownListFor(x => x.CodInstituicaoEnsino, new SelectList(Model.InstituicaoEnsinos, "CodInstituicaoEnsino", "DescInstituicaoEnsino"), "Selecione...",
+                        new { @class = "form-control",
+                            disabled = "disabled" })*@
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="CodCurso" class="control-label">Curso</label>
+                @Html.DropDownListFor(x => x.CodCurso, new SelectList(Model.Cursos, "CodCurso", "DescCurso"), "Selecione...", new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-sm-12">
+                <label class="control-label">Apoio</label>
+                <div class="panel panel-default" style="margin-bottom:0px !important">
+                    <div class="panel-body" style="padding: 5px 15px 5px 15px !important; background-color: #eee; border:1px solid #ccc">
+
+                        @if (Model.CodApoio != null)
+                        {
+                            @foreach (var item in Model.Apoios)
+                            {
+                                if (Model.CodApoio.Contains(item.CodApoio))
+                                {
+                                    @Html.DisplayFor(x => item.DescApoio)<span>; </span>
+                                }
+                            }
+                            @if (Model.CodApoio.Contains(99999))
+                            {
+                                @Html.DisplayFor(x => x.OutrosApoio)<span>; </span>
+                            }
+                        }
+                        else
+                        {
+                            <span>Não há apoio para este trabalho</span>
+                        }
+                    </div>
+                </div>
+
+                @*<label asp-for="CodApoio" class="control-label">Apoio</label>
+                @Html.ListBoxFor(x => x.CodApoio, new MultiSelectList(Model.Apoios, "CodApoio", "DescApoio"), new { id = "msApoio", multiple = "multiple", @class = "msApoio", @onchange = "ValidarMS(this.id)" })
+                <div style="padding-top:5px;">
+                    <input maxlength="50" asp-for="OutrosApoio"
+                           id="OutrosApoio"
+                           class="form-control"
+                           type="text"
+                           placeholder="Informe o nome de sua instituição" />
+                </div>*@
+            </div>
+            @*<div class="form-group col-sm-6">
+                <label asp-for="CodBolsa" class="control-label">Bolsa</label>
+                @Html.ListBoxFor(x => x.CodBolsa, new MultiSelectList(Model.Bolsas, "CodBolsa", "DescBolsa"), new { id = "msBolsa", multiple = "multiple", @class = "msBolsa", @onchange = "ValidarMS(this.id)" })
+            </div>*@
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-12">
+                <label asp-for="CodSimposioTematico" class="control-label">Sessão Temática*</label> <a href="#/" onclick="ListarSTs()"> Clique aqui e veja as ementas</a>
+                @Html.DropDownListFor(x => x.CodSimposioTematico, new SelectList(Model.SimposioTematicos, "CodSimposioTematico", "TituloSimposioTematico"), "Selecione...", new { @class = "form-control obrigatorio", disabled = "disabled" })
+
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label asp-for="CodFormacao" class="control-label">Formação acadêmica / Profissional*</label>
+                @{
+                    var attributes = new Dictionary<string, object>();
+                    attributes.Add("class", "form-control obrigatorio");
+                    attributes.Add("onchange", "EscolherFormacao()");
+                    attributes.Add("disabled", "disabled");
+
+                    @Html.DropDownListFor(x => x.CodFormacao, new SelectList(Model.Formacoes, "CodFormacao", "DescFormacao"), "Selecione...", attributes)
+                }
+
+            </div>
+            <div class="form-group col-sm-6">
+                <label asp-for="CodModalidade" class="control-label">Modalidade de apresentação*</label>
+                @{
+                    var atributosmodalidade = new Dictionary<string, object>();
+                    atributosmodalidade.Add("class", "form-control obrigatorio");
+                    atributosmodalidade.Add("data_placement", "top");
+                    atributosmodalidade.Add("data_html", "tooltip");
+                    atributosmodalidade.Add("title", "<i class='fa fa-exclamation-triangle fa-fw'></i> A lista de modalidades é preenchida de acordo com o que foi escolhido na Formação acadêmica / Profissional.");
+
+
+                    atributosmodalidade.Add("disabled", "disabled");
+
+
+                    @Html.DropDownListFor(x => x.CodModalidade, new SelectList(Model.Modalidades, "CodModalidade", "DescModalidade"), "Selecione...", atributosmodalidade)
+                    atributosmodalidade.Clear();
+                }
+
+
+
+                @*@Html.DropDownListFor(x => x.CodModalidade, new SelectList(Model.Modalidades, "CodModalidade", "DescModalidade"), "Selecione...", new {
+                data_placement = "top",
+                data_html = "true",
+                data_toggle = "tooltip",
+                @title = "<i class='fa fa-exclamation-triangle fa-fw'></i> A lista de modalidades é preenchida de acordo com o que foi escolhido na Formação acadêmica / Profissional.",
+                @class = "form-control obrigatorio",
+                onchange = "ShowFormulario()" })*@
+            </div>
+        </div>
+
+        <div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="view-titulo-tab line-bottom">
+                        <div class="pull-left">
+                            <h4>Ressalvas feitas pelo avaliador</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Raw(Model.Comentario)
+        </div>
+        <div id="PartialFormulario">
+        </div>
+        <div class="form-group">
+            <div class="panel-default">
+                <div class="panel-heading" style="border: 1px solid #ddd;">
+                    <b>Atenção:</b> Os campos marcados com asterisco(*) são obrigatórios.
+                </div>
+            </div>
+        </div>
+        <div id="dvMensagemErro" class="alert alert-danger text-black-50" style="font-size: 16px; display:none">
+            Há campos obrigatórios que não foram informados, verifique antes de tentar salvar.
+        </div>
+        <div class="form-group">
+            <div class="pull-right">
+                <input id="btnAlterar" type="submit" name="Trabalho_ContadorMinLimit" value="Corrigir" class="btn btn-success" />
+                <a href="@Url.Action("Index", "Avaliacao", new { Ambiente = "AcompanharAvaliacao"})" id="btnCancelar" class="btn btn-primary">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div class="modal fade" id="ModalCriarBase" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close" onclick="FecharBase()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Atenção!</h4>
+            </div>
+            <div id="PartialCriarBase"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalEditarBase" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close" onclick="FecharBase()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Atenção!</h4>
+            </div>
+            <div id="PartialEditarBase"></div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ModalListarSTs" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Sessões Temáticas</h4>
+            </div>
+            <div id="PartialListarSTs"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok, entendi!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function ListarSTs() {
+        $('.panel-loading').show();
+        $('#BodyTrabalho').hide();
+        $.ajax({
+            url: "ListarEmentas",
+            type: 'GET',
+            success: function (result) {
+                $('.panel-loading').hide();
+                $('#BodyTrabalho').show();
+                if (result.erro) {
+                    NotificaoErro(result.message);
+                }
+                else {
+                    $('#PartialListarSTs').html(result);
+                    $('#ModalListarSTs').modal({ backdrop: 'static', keyboard: false });
+                }
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu uma inconsistência no sistema, entre em contato com suporte.");
+            }
+        });
+    }
+    //function AlterarTrabalho(btn) {
+    //    if (validaForm(btn)) {
+    //        $('#btnAlterar').attr("disabled", "disabled");
+    //        $('#btnCancelar').attr("disabled", "disabled");
+    //        $.ajax({
+    //            url: "Edit",
+    //            type: 'POST',
+    //            data: $('#Trabalho').serialize(),
+    //            success: function (result) {
+    //                if (result.erro) {
+    //                    $('#btnAlterar').removeAttr("disabled");
+    //                    $('#btnCancelar').removeAttr("disabled");
+    //                    NotificaoErro(result.message);
+    //                }
+    //                else {
+    //                    window.location.replace(result.linkRedirect);
+    //                }
+    //            },
+    //            error: function (xhr, status) {
+    //                alert(status);
+    //            }
+    //        });
+    //    }
+    //}
+
+    $(document).on("submit", "form#Trabalho", function (event) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        if (validaForm()) {
+            if (ValidaCaracteres()) {
+            $('#btnAlterar').attr("disabled", "disabled");
+            $('#btnCancelar').attr("disabled", "disabled");
+            $.ajax({
+                url: $(this).attr("action"),
+                type: $(this).attr("method"),
+                dataType: "JSON",
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (result.erro) {
+                        $('#btnAlterar').removeAttr("disabled");
+                        $('#btnCancelar').removeAttr("disabled");
+                        NotificaoErro(result.message);
+                    }
+                    else {
+                        window.location.replace(result.linkRedirect);
+                    }
+                },
+                error: function (xhr, desc, err) {
+
+
+                }
+                });
+            }
+        }
+
+    });
+
+    function ValidaCaracteres() {
+        var minlimit = 10;
+        var field1 = $("#Introducao").val();
+        var field2 = $("#Objetivo").val();
+        var field3 = $("#Metodologia").val();
+        var field4 = $("#Resultado").val();
+        var field5 = $("#Conclusao").val();
+        var fieldDiscussao = $("#Discussao").val();
+        var fieldCounter = field1 + field2 + field3 + field4 + field5;
+        if (typeof fieldCounter !== "undefined" && fieldCounter.length < minlimit) {
+            NotificaoErro("O corpo do trabalho deve ter no mínimo 1500 caracteres, o qual deve conter: Introdução, Objetivo, Metodologia, Resultado e Conclusão.");
+            return false;
+        }
+        else if (typeof fieldDiscussao !== "undefined" && fieldDiscussao.length < minlimit) {
+            NotificaoErro("O corpo do trabalho deve ter no mínimo 1500 caracteres, o qual deve conter: Discussão.");
+            return false;
+        }
+        else {
+            if ($('.input-erro').length > 0) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    }
+
+
+    //function ValidarEmailTrabalho(campo) {
+    //    str = $('#CPFCoautor').val();
+    //    var cpf = str.replace(/[^\d]+/g, "");
+    //    if ((cpf).length === 11) {
+    //        inputSucesso($('#CPFCoautor'));
+    //        if ($('#CodTipoTrabalhoAutor').prop('selectedIndex') === 0) {
+    //            $('#CodTipoTrabalhoAutor').addClass("input-erro");
+    //            NotificaoAviso("Escolha um tipo de componente do grupo do trabalho!");
+    //        }
+    //        else {
+    //            CallForm();
+    //        }
+    //    }
+    //    else {
+    //        inputErro($('#CPFCoautor'));
+    //        NotificaoAviso("O CPF inserido é inválido. Verifique e tente novamente.");
+    //    }
+    //}
+
+
+    function ValidarMS(id) {
+        $('#' + id).removeClass("input-erro");
+        $('.' + id).removeClass("input-erro");
+        $('#' + id).removeClass("input-sucesso");
+        $('.' + id).removeClass("input-sucesso");
+        if ($('#' + id).val().length != 0) {
+            inputSucesso($('.' + id));
+        }
+    }
+
+    //function EditarAutor(val) {
+    //    $.ajax({
+    //        url: "EditarBase?CodPessoa=" + val,
+    //        type: 'POST',
+    //        data: $('#Trabalho').serialize(),
+    //        success: function (result) {
+    //            $('#PartialEditarBase').html(result);
+    //            $('#ModalEditarBase').modal({ backdrop: 'static', keyboard: false });
+    //        },
+    //        error: function (xhr, status) {
+    //            NotificaoErro("Ocorreu uma inconsistência no sistema, entre em contato com suporte.");
+    //        }
+    //    });
+    //}
+
+
+    //function DeletarAutor(val) {
+    //    $('.panel-loading').show();
+    //    $('#BodyTrabalho').hide();
+    //    $('#TituloPersistir').val($('#Titulo').val());
+    //    $('#PalavraChavePersistir').val($('#PalavraChave').val());
+    //    $('#IntroducaoPersistir').val($('#Introducao').val());
+    //    $('#ObjetivoPersistir').val($('#Objetivo').val());
+    //    $('#MetodologiaPersistir').val($('#Metodologia').val());
+    //    $('#ResultadoPersistir').val($('#Resultado').val());
+    //    $('#ConclusaoPersistir').val($('#Conclusao').val());
+    //    $('#DiscussaoPersistir').val($('#Discussao').val());
+    //    $('#NomeArquivoCompletoPersistir').val($('#NomeArquivoCompleto').val());
+    //    $('#ArquivoCompletoPersistir').val($('#ArquivoCompleto').val());
+    //    var url = "DeletarAutor?Partial=PEdit&CodPessoa=" + val;
+    //    $.ajax({
+    //        url: url,
+    //        type: 'POST',
+    //        data: $('#Trabalho').serialize(),
+    //        success: function (result) {
+    //            $('.panel-loading').hide();
+    //            $('#BodyTrabalho').empty();
+    //            $('#BodyTrabalho').html(result);
+    //            $('#BodyTrabalho').show();
+    //            if ($("select#CodModalidade").prop('selectedIndex') != 0) {
+    //                ShowFormulario();
+    //            }
+    //        },
+    //        error: function (xhr, status) {
+    //            NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+    //        }
+    //    });
+    //}
+    function CallForm() {
+        $('.panel-loading').show();
+        $('#BodyTrabalho').hide();
+        $('#TituloPersistir').val($('#Titulo').val());
+        $('#PalavraChavePersistir').val($('#PalavraChave').val());
+        $('#IntroducaoPersistir').val($('#Introducao').val());
+        $('#ObjetivoPersistir').val($('#Objetivo').val());
+        $('#MetodologiaPersistir').val($('#Metodologia').val());
+        $('#ResultadoPersistir').val($('#Resultado').val());
+        $('#ConclusaoPersistir').val($('#Conclusao').val());
+        $('#DiscussaoPersistir').val($('#Discussao').val());
+        $('#NomeArquivoCompletoPersistir').val($('#NomeArquivoCompleto').val());
+        $('#ArquivoCompletoPersistir').val($('#ArquivoCompleto').val());
+        var url = "LoadEdit";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: $('#Trabalho').serialize(),
+            success: function (result) {
+                $('.panel-loading').hide();
+                $('#BodyTrabalho').empty();
+                $('#BodyTrabalho').html(result);
+                $('#BodyTrabalho').show();
+                //$('#CPFCoautor').val('');
+                if ($("select#CodModalidade").prop('selectedIndex') != 0) {
+                    ShowFormulario();
+                }
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+            }
+        });
+    }
+    function EscolherFormacao(result) {
+        var url = "EscolherFormacao?Partial=PEdit";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: $('#Trabalho').serialize(),
+            success: function (result) {
+                $('#BodyTrabalho').empty();
+                $('#BodyTrabalho').html(result);
+                $("select#CodModalidade").prop('selectedIndex', 0);
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+            }
+        });
+    }
+
+    function ShowFormulario() {
+        var url = "LoadFormulario";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: $('#Trabalho').serialize(),
+            success: function (result) {
+                $('#PartialFormulario').empty();
+                $('#PartialFormulario').html(result);
+                $('#PartialFormulario').show();
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+            }
+        });
+    }
+    //$("#CodInstituicaoEnsino").change(function () {
+    //    if ($("#CodInstituicaoEnsino").val() != "99999") {
+    //        $("#OutrosInstituicaoEnsino").hide();
+    //        $("#OutrosInstituicaoEnsino").val("");
+    //        $("#OutrosInstituicaoEnsino").removeClass("obrigatorio");
+    //        $("#OutrosInstituicaoEnsino").removeClass("input-sucesso");
+    //        $("#OutrosInstituicaoEnsino").removeClass("input-erro");
+    //    }
+    //    else {
+    //        $("#OutrosInstituicaoEnsino").show();
+    //        $("#OutrosInstituicaoEnsino").focus();
+    //        $("#OutrosInstituicaoEnsino").addClass("obrigatorio");
+    //    }
+    //});
+    //$("#msApoio").change(function () {
+    //    if ($("#msApoio").val().indexOf("99999") == -1) {
+    //        $("#OutrosApoio").hide();
+    //        $("#OutrosApoio").val("");
+    //        $("#OutrosApoio").removeClass("obrigatorio");
+    //        $("#OutrosApoio").removeClass("input-sucesso");
+    //        $("#OutrosApoio").removeClass("input-erro");
+    //    }
+    //    else {
+    //        $("#OutrosApoio").show();
+    //        //$("#OutrosApoio").attr("disabled","disabled");
+    //       // $("#OutrosApoio").addClass("obrigatorio");
+    //    }
+    //});
+    function FecharBase() {
+        $("#ModalCriarBase").remove();
+        $('.modal-backdrop').remove();
+       //$('#ModalCriarBase').on('hidden', function () {
+       //     $(this).data('modal', null);
+       // });
+       // $('#ModalEditarBase').on('hidden', function () {
+       //     $(this).data('modal', null);
+       // });
+        var url = "RemoverSessionTrabalho";
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function (result) {
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+            }
+        });
+
+        @*var lerTemp = '@Html.Raw((string)TempData["FormTrabalho"])';*@
+    }
+</script>
+

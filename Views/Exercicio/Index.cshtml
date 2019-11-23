@@ -1,0 +1,72 @@
+﻿@model List<CardFitness.Models.Exercicio>
+@{
+    ViewBag.Title = "Exercícios";
+}
+
+<div style="margin-top: 20px">
+    <div class="pull-left">
+        <div>
+            <h4 style="display:inline; font-size: 24px; font-weight:bold ">Lista de exercícios</h4>
+        </div>
+    </div>
+
+    <div class="pull-right">
+        <a asp-action="Cadastrar" class="btn btn-primary">Cadastrar</a>
+    </div>
+</div>
+
+<table class="table table-hover pull-left" style="margin-top:20px">
+    <tr>
+        <td>
+            @Html.Label("Tipo")
+        </td>
+        <td>
+            @Html.Label("Descrição")
+        </td>
+        <td>
+            @Html.Label("Situação")
+        </td>
+        <td class="text-right">
+            @Html.Label("Opções")
+        </td>
+    </tr>
+    @{ foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Tipo.Descricao
+                </td>
+                <td>
+                    @item.Descricao
+                </td>
+                <td>
+                    @if (item.Status.ToString() == "1")
+                    {
+                        <span>Ativo</span>
+                    }
+                    else
+                    {
+                        <span>Inativo</span>
+                    }
+                </td>
+                <td class="text-right">
+                    <a href="@Url.Action("Editar", "Exercicio", new { IDExercicio = item.IDExercicio })" class="btn btn-info">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    @if (item.Status.ToString() == "1")
+                    {
+                        <a href="@Url.Action("AlterarSituacao", "Exercicio", new { IDExercicio = item.IDExercicio })" class="btn btn-danger">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("AlterarSituacao", "Exercicio", new { IDExercicio = item.IDExercicio })" class="btn btn-success">
+                            <i class="fa fa-check"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    }
+</table>

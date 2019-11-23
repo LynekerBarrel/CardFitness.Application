@@ -1,0 +1,68 @@
+﻿@model AdmSimposio.Models.Etapa
+@using AdmSimposio.CrossCutting
+
+<script src="~/js/SimposioValidate.js"></script>
+<script type="text/javascript">
+ var ExcluirEtapa = function (CodEtapa) {
+        if (ConfirmarOnClick("Deseja realmente excluir esta etapa?")) {
+            var url = '@Url.Action("ExcluirEtapa", "Basicos", new { index = "CodEtapa" })'.replace("CodEtapa", CodEtapa);
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: $('#EditarEtapa').serialize(),
+                success: function (result) {
+                    if (result.erro) {
+                        NotificaoErro(result.message);
+                        $('#ModalEditarEtapa').modal("toggle");
+                    }
+                    else {
+                        location.href = '@Url.Action("Index","Basicos")';
+                        NotificaoSucesso(result.message);
+                    }
+                },
+                error: function (xhr, status) {
+                    alert(status);
+                    ReloadForm(xhr);
+                }
+            });
+        }
+    };
+</script>
+
+<div class="col-sm-12" style="margin-top: 10px">
+    <div id="response"></div>
+</div>
+<form asp-action="EditarEtapa" id="EditarEtapa">
+    <div class="modal-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @Html.HiddenFor(model => model.CodSimposio)
+        @Html.HiddenFor(model => model.CodEtapa)
+        @Html.HiddenFor(model => model.Excluido)
+        @Html.HiddenFor(model => model.DataExclusao)
+        <div class="form-group text-center">
+            <h4>@Html.DisplayFor(model => model.Simposio.TituloReduzido)</h4>
+        </div>
+        <div class="form-group">
+            <label asp-for="DescEtapa" class="control-label"></label>
+            <input asp-for="DescEtapa" class="form-control obrigatorio" placeholder="Ex.: 1ª Etapa" />
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label asp-for="DataInicioEtapa" class="control-label"></label>
+                <input asp-for="DataInicioEtapa" class="form-control obrigatorio" onblur="ChecarDataInicioModal(this, '#DataFimEtapa');" />
+            </div>
+            <div class="form-group col-sm-6">
+                <label asp-for="DataFimEtapa" class="control-label"></label>
+                <input asp-for="DataFimEtapa" class="form-control obrigatorio" onblur="ChecarDataFimModal(this, '#DataInicioEtapa');" />
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" value="Atualizar" class="btn btn-success" onclick="if ( ! validaForm(this)) return false;" />
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>   
+        @if (VerificarPerfil.Validar("AdmSimposio/Basicos/EtapaExcluir"))
+        {
+            <button type="button" class="btn btn-danger" onclick="ExcluirEtapa(@Model.CodEtapa)">Excluir</button>
+        }
+    </div>
+</form>

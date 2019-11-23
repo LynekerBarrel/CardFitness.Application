@@ -1,0 +1,52 @@
+﻿@model AdmSimposio.Models.RelatorioViewModel
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a><i class="fa fa-chart-line fa-fw"></i> Relatórios</a>
+    </div>
+    <div class="panel-body" style="min-height: 400px">
+        <form asp-action="formRel" id="formRel">
+            <label class="control-label">Escolha seu relatório</label>
+            @Html.DropDownListFor(m => m.Relatorio, new SelectList(Model.Relatorios, "Value", "Key"), "Selecione...", new { @class = "form-control", onchange = "EscolherRelatorio()" })
+        </form>
+        <hr />
+        <div id="PartialRelEscolhido"></div>
+    </div>
+</div>
+
+<script>
+    function EscolherRelatorio() {
+        $('.panel-loading').show();
+        $('#BodyRelatorio').hide();
+        if ($("#Relatorio").prop("selectedIndex") == 0) {
+            $('#PartialRelEscolhido').empty();
+            $('#PartialRelEscolhido').hide();
+            $('.panel-loading').hide();
+            $('#BodyRelatorio').show();
+        }
+        else {
+            var url = '@Url.Action("EscolherRelatorio", "Relatorio")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: $('#formRel').serialize(),
+                success: function (result) {
+                    $('.panel-loading').hide();
+                    $('#BodyRelatorio').show();
+                    if (result.erro) {
+                        NotificaoErro(result.message);
+                    }
+                    else {
+                        $('#PartialRelEscolhido').empty();
+                        $('#PartialRelEscolhido').html(result);
+                        $('#PartialRelEscolhido').show();
+                    }
+                },
+                error: function (xhr, status) {
+                    NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+                }
+            });
+        }
+    }
+</script>

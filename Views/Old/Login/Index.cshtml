@@ -1,0 +1,151 @@
+﻿@model AdmSimposio.Models.Login
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<script src="~/vendor/jquery/jquery.min.js"></script>
+<script src="~/lib/jquery-mask/jquery.mask.js"></script>
+<script src="~/js/SimposioValidate.js"></script>
+<script src="~/Notify/js/bootstrap-notify.min.js"></script>
+@if (TempData["Aviso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $.notify(
+        {
+            icon: 'fa fa-exclamation-triangle',
+                message: '@Html.Raw((string)TempData["Aviso"])'
+        },
+        {
+            element: 'body',
+            position: null,
+            type: 'warning',
+            allow_dismiss: true,
+            newest_on_top: false,
+            offset: {
+                x: 20,
+                y: 60
+            },
+            placement: {
+                from: "top",
+                align: "center"
+            },
+            delay: 5000,
+            timer: 1000,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutUp'
+            },
+            template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0}" role="alert">' +
+                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                '<span data-notify="icon"></span> ' +
+                '<span data-notify="title">{1}</span> ' +
+                '<span data-notify="message">{2}</span>' +
+                '</div>'
+        });
+    </script>
+}
+@if (TempData["Erro"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+      $.notify(
+        {
+            icon: 'fa fa-exclamation-circle',
+            message: '@Html.Raw((string)TempData["Erro"])'
+        },
+        {
+            element: 'body',
+            position: null,
+            type: 'danger',
+            allow_dismiss: true,
+            newest_on_top: false,
+            offset: {
+                x: 20,
+                y: 60
+            },
+            placement: {
+                from: "top",
+                align: "center"
+            },
+            delay: 5000,
+            timer: 1000,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutUp'
+            },
+            template: '<div data-notify="container" class="col-xs-11 col-sm-4 alert alert-{0}" role="alert">' +
+                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                '<span data-notify="icon"></span> ' +
+                '<span data-notify="title">{1}</span> ' +
+                '<span data-notify="message">{2}</span>' +
+                '</div>'
+        });
+    </script>
+}
+<script>
+    $(document).ready(function () {
+        if ($('#CodFuncionario').val() == '0') {
+            $('#CodFuncionario').val('');
+        }
+        $('#CodFuncionario').focus();
+
+        $("#Senha").keypress(function (e) {
+            if (event.which == 13) {
+                $('#btnContinuar').trigger('click');
+            }
+            else {
+                var countfield = $("#Senha");
+                console.log("toki: " + countfield);
+                console.log("toki: " + countfield.val().length);
+                if (countfield.val().length > 9) {
+                    $("#Senha").val(countfield.val().substring(0, 10));
+                    return false;
+                } else {
+
+                }
+            }
+        });
+    });
+
+
+
+</script>
+
+
+<div class="container">
+    <div class="container-fluid">
+        <div class="row justify-content-md-center">
+            <div class="col-md-5">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>Acesso Administrativo</h3>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Index" method="post" id="Login">
+                            <div class="form-group col-md-12">
+                                <div class="row">
+                                    <label asp-for="CodFuncionario" class="control-label"></label>
+                                    @Html.TextBoxFor(model => model.CodFuncionario, new { @class = "form-control obrigatorio", placeholder = "Informe sua matrícula", type = "number" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <div class="row">
+                                    <label asp-for="Senha" class="control-label"></label>
+                                    @Html.PasswordFor(model => model.Senha, new { maxlenght = 10, value = Model.Senha, @class = "form-control obrigatorio", placeholder = "Informe sua senha" })
+                                    @*<input asp-for="Senha" class="form-control obrigatorio" type="password" />*@
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <div class="row float-right">
+                                    <input type="submit" id="btnContinuar" class="btn btn-success" value="Continuar" onclick="if(!validaForm(this)) return false;" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

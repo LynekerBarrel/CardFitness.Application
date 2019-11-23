@@ -1,0 +1,148 @@
+﻿@model AdmSimposio.Models.Propositura
+
+<script type="text/javascript" charset="utf-8">
+
+    $(function () {
+        $('#msCurso').change(function () {
+            console.log($(this).val());
+        }).multipleSelect({
+            filter: true,
+            width: '100%',
+            placeholder: 'Selecione...'
+        });
+    });
+    $(function () {
+        $('#msAreaConhecimento').change(function () {
+            console.log($(this).val());
+        }).multipleSelect({
+            filter: true,
+            width: '100%',
+            placeholder: 'Selecione...'
+        });
+    });
+</script>
+@if (TempData["AutorNotFound"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+
+        $.ajax({
+            url: '@Url.Action("Mail","Propositura")',
+            type: 'POST',
+            success: function (result) {
+                $('#PartialMail').html(result);
+                $('#ModalMail').modal({ backdrop: 'static', keyboard: false});
+            },
+            error: function (xhr, status) {
+                alert(status);
+            }
+        });
+    </script>
+}
+<div class="panel-body" style="height:450px;display:block; overflow-y:scroll;width:100%;">
+    <form asp-action="Edit" id="Propositura">
+
+        <div class="form-group">
+            <div>
+                <div class="form-group">
+
+                    @{
+                        if (Model != null)
+                        {
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <label asp-for="CodSimposio" class="control-label">Proponente(s)</label>
+                                </div>
+                                <div class="panel-body">
+                                    @foreach (var item in Model.Autores)
+                                    {
+                                        @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].CodPessoa)
+                                        @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].Nome)
+                                        @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].Email)
+                                        @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].Tipo)
+                                        @Html.HiddenFor(x => x.Autores[Model.Autores.IndexOf(item)].Autor)
+
+                                        <label asp-for="CodSimposio" class="control-label">Nome: </label>
+                                        @Html.DisplayFor(modelItem => item.Nome)
+                                        <br />
+                                        <label asp-for="CodSimposio" class="control-label">E-mail: </label>
+                                        @Html.DisplayFor(modelItem => item.Email)
+                                        if (Model.Autores.Last() != item)
+                                        {
+                                            <hr style="margin-top: 5px; margin-bottom: 10px" />
+                                        }
+
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+
+            </div>
+
+            <div class="panel panel-default">
+              
+                <div class="panel-body">
+
+
+                    <div class="form-group">
+                        <div>
+                            <div class="form-group">
+                                <label asp-for="CodSimposio" class="control-label">Cursos de Interesse: </label>
+                                @{
+                                    if (Model != null)
+                                    {
+                                        foreach (var item in Model.CursosInteresse)
+                                        {
+                                            @Html.DisplayFor(modelItem => item.DescCurso)<span>; </span>
+
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            <div class="form-group">
+                                <label asp-for="CodSimposio" class="control-label">Área de Conhecimento: </label>
+                                @{
+                                    if (Model != null)
+                                    {
+                                        foreach (var item in Model.AreaConhecimento)
+                                        {
+                                            @Html.DisplayFor(modelItem => item.DescAreaConhecimento)<span>; </span>
+
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="CodAtividadeProposta" class="control-label">Atividade Proposta: </label>
+                        @Html.DisplayFor(x => x.DescAtividadeProposta)
+                    </div>
+                    <div class="form-group">
+
+                        <label asp-for="TituloPropositura" class="control-label">Titulo: </label>
+                        @Html.DisplayFor(x => x.TituloPropositura)
+                    </div>
+
+
+                    <div class="form-group">
+                        <label asp-for="ResumoPropositura" class="control-label">Ementa: </label>
+                        @Html.DisplayFor(x => x.ResumoPropositura)
+                        @*@Html.TextAreaFor(m => m.ResumoPropositura, new { disabled = "disabled", @class = "form-control obrigatorio", @onkeyup = "textCounter(this,'counterResumo'," + @Model.TamDescPropositura + ");", id = "message" })*@
+                    </div>
+                </div>
+            </div>
+
+    </form>
+</div>
+
+<style>
+</style>
+
+
+

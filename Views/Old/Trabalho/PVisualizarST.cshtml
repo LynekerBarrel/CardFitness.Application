@@ -1,0 +1,43 @@
+﻿@model IEnumerable<AdmSimposio.Models.SimposioTematico>
+
+
+<div class="panel-body" style="height:450px;display:block; overflow-y:scroll;width:100%;">
+    @foreach (var item in Model)
+    {
+        <div class="form-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <b> @Html.DisplayFor(x => item.TituloSimposioTematico, new { @class = "control-label" })</b>
+
+                </div>
+                <div class="panel-body">
+                    <label class="control-label">Proponentes: </label>
+                    @if (item.Autores != null)
+                    {
+                        @foreach (var itemAutor in item.Autores)
+                        {
+
+                            @if (item.Autores.Last() != itemAutor)
+                            {
+                                @Html.DisplayFor(modelItem => itemAutor.Nome)<span>, </span>
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(modelItem => itemAutor.Nome)
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <span> Não há autores para esta sessão temática!</span>
+                    }
+                    <hr style="margin-top: 5px; margin-bottom: 10px" />
+                    <div class="text-justify">
+                        <b>Ementa: </b>
+                        @Html.DisplayFor(x => item.DescSimposioTematico, new { @class = "text-justify" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

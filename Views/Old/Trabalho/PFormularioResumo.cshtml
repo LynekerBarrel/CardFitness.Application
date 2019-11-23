@@ -1,0 +1,221 @@
+﻿@model AdmSimposio.Models.Trabalho
+
+<script src="~/js/SimposioValidate.js"></script>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="view-titulo-tab line-bottom">
+            <div class="pull-left">
+                <h4>Formulário</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label asp-for="Titulo" class="control-label">Título*</label>
+            <input asp-for="Titulo" onblur="textCounter(this, 'counterTitulo', 200);"  onkeyup="textCounter(this, 'counterTitulo', 150);" class="form-control obrigatorio" type="text" />
+            @*<p style="color:#808080" id="counterTitulo">Caracteres Restantes: <b>@(200 - Model.Titulo.Length)</b></p>*@
+            <p style="color:#808080" id="counterTitulo">
+                Caracteres Restantes: <b>
+                    @if (!string.IsNullOrEmpty(Model.Titulo))
+                    {
+                        <span>
+                            @(200 - Model.Titulo.Length)
+                        </span>
+                    }
+                    else
+                    {
+                        <span>200</span>
+                    }
+                </b>
+            </p>
+        </div>
+        <div class="form-group">
+            <label asp-for="PalavraChave" class="control-label">Palavras Chave*</label>
+            @*@Html.TextBoxFor(model => model.CPFCoautor, new {  placeholder = "Informe o CPF da pessoa que você deseja convidar para compartilhar este trabalho.", type = "text" })*@
+
+            <input asp-for="PalavraChave" onblur="textCounter(this, 'counterPalavraChave', 150);" onkeyup="textCounter(this, 'counterPalavraChave', 150);" class="form-control obrigatorio ToLower"
+                   type="text"
+                   data-placement="top"
+                   data-toggle="tooltip"
+                   data-html="true"
+                   title="<i class='fa fa-exclamation-triangle fa-fw'></i> Neste campo deverá ser informado as palavras chave referente ao assunto do trabalho separados com vírgulas(,). Ex.: cachorro, gato, ovelha" />
+            @*<p style="color:#808080" id="counterPalavraChave">Caracteres Restantes: <b>@(150 - Model.PalavraChave.Length)</b></p>*@
+            <p style="color:#808080" id="counterPalavraChave">
+                Caracteres Restantes: <b>
+                    @if (!string.IsNullOrEmpty(Model.PalavraChave))
+                    {
+                        <span>
+                            @(150 - Model.PalavraChave.Length)
+                        </span>
+                    }
+                    else
+                    {
+                        <span>150</span>
+                    }
+                </b>
+            </p>
+        </div>
+
+
+
+        <div class="form-group">
+            <label asp-for="Introducao" class="control-label">Introdução*</label>
+            @Html.TextAreaFor(m => m.Introducao, new { @class = "form-control obrigatorio", @style = "height:120px", @onblur = "textCounterClass(this);", @onkeyup = "textCounterClass(this);" })
+            @*<p style="color:#808080" class="counterCorpo">Caracteres Restantes: <b>@(2000 - Model.Introducao.Length)</b></p>*@
+            <p style="color:#808080" class="counterCorpo">
+                Caracteres Restantes: <b>
+                    @if (!string.IsNullOrEmpty(Model.Introducao))
+                    {
+                        <span>
+                            @(5000 - (
+                                    (!string.IsNullOrEmpty(Model.Introducao) ? Model.Introducao.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Objetivo) ? Model.Objetivo.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Metodologia) ? Model.Metodologia.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Resultado) ? Model.Resultado.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Conclusao) ? Model.Conclusao.Length : 0)
+                                    ))
+                        </span>
+                    }
+                    else
+                    {
+                        <span>5000</span>
+                    }
+                </b>
+            </p>
+        </div>
+        <div class="form-group">
+            <label asp-for="Objetivo" class="control-label">Objetivo*</label>
+            @Html.TextAreaFor(m => m.Objetivo, new { @class = "form-control obrigatorio", @style = "height:120px", @onblur = "textCounterClass(this);", @onkeyup = "textCounterClass(this);" })
+            @*<p style="color:#808080" class="counterCorpo">Caracteres Restantes: <b>@(2000 - Model.Objetivo.Length)</b></p>*@
+            <p style="color:#808080" class="counterCorpo">
+                Caracteres Restantes: <b>
+                    @if (!string.IsNullOrEmpty(Model.Objetivo))
+                    {
+                        <span>
+                            @(5000 - (
+                                (!string.IsNullOrEmpty(Model.Introducao) ? Model.Introducao.Length : 0) +
+                                (!string.IsNullOrEmpty(Model.Objetivo) ? Model.Objetivo.Length : 0) +
+                                (!string.IsNullOrEmpty(Model.Metodologia) ? Model.Metodologia.Length : 0) +
+                                (!string.IsNullOrEmpty(Model.Resultado) ? Model.Resultado.Length : 0) +
+                                (!string.IsNullOrEmpty(Model.Conclusao) ? Model.Conclusao.Length : 0)
+                                ))
+                        </span>
+                    }
+                    else
+                    {
+                        <span>5000</span>
+                    }
+                </b>
+            </p>
+        </div>
+        <div class="form-group">
+            <label asp-for="Metodologia" class="control-label">Metodologia*</label>
+            @Html.TextAreaFor(m => m.Metodologia, new { @class = "form-control obrigatorio", @style = "height:120px", @onblur = "textCounterClass(this);", @onkeyup = "textCounterClass(this);" })
+            @*<p style="color:#808080" class="counterCorpo">Caracteres Restantes: <b>@(2000 - Model.Metodologia.Length)</b></p>*@
+            <p style="color:#808080" class="counterCorpo">
+                Caracteres Restantes: <b>
+                    @if (!string.IsNullOrEmpty(Model.Metodologia))
+                    {
+                        <span>
+                            @(5000 - (
+                                    (!string.IsNullOrEmpty(Model.Introducao) ? Model.Introducao.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Objetivo) ? Model.Objetivo.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Metodologia) ? Model.Metodologia.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Resultado) ? Model.Resultado.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Conclusao) ? Model.Conclusao.Length : 0)
+                                    ))
+                        </span>
+
+                    }
+                    else
+                    {
+                        <span>5000</span>
+                    }
+                </b>
+            </p>
+        </div>
+        <div class="form-group">
+            <label asp-for="Resultado" class="control-label">Resultado*</label>
+            @Html.TextAreaFor(m => m.Resultado, new { @class = "form-control obrigatorio", @style = "height:120px", @onblur = "textCounterClass(this);", @onkeyup = "textCounterClass(this);" })
+            @*<p style="color:#808080" class="counterCorpo">Caracteres Restantes: <b>@(2000 - Model.Resultado.Length)</b></p>*@
+            <p style="color:#808080" class="counterCorpo">
+                Caracteres Restantes: <b>
+                    @if (!string.IsNullOrEmpty(Model.Resultado))
+                    {
+                        <span>
+                            @(5000 - (
+                                    (!string.IsNullOrEmpty(Model.Introducao) ? Model.Introducao.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Objetivo) ? Model.Objetivo.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Metodologia) ? Model.Metodologia.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Resultado) ? Model.Resultado.Length : 0) +
+                                    (!string.IsNullOrEmpty(Model.Conclusao) ? Model.Conclusao.Length : 0)
+                                    ))
+                        </span>
+                    }
+                    else
+                    {
+                        <span>5000</span>
+                    }
+                </b>
+            </p>
+        </div>
+        <div class="form-group">
+            <label asp-for="Conclusao" class="control-label">Conclusão*</label>
+            @Html.TextAreaFor(m => m.Conclusao, new { @class = "form-control obrigatorio", @style = "height:120px", @onblur = "textCounterClass(this);", @onkeyup = "textCounterClass(this);" })
+            @*<p style="color:#808080" class="counterCorpo">Caracteres Restantes: <b>@(2000 - Model.Conclusao.Length)</b></p>*@
+            <p style="color:#808080" class="counterCorpo">
+                Caracteres Restantes: <b>
+                    @if (!string.IsNullOrEmpty(Model.Conclusao))
+                    {
+                        <span>
+                            @(5000 - (
+                                (!string.IsNullOrEmpty(Model.Introducao) ? Model.Introducao.Length : 0) +
+                                (!string.IsNullOrEmpty(Model.Objetivo) ? Model.Objetivo.Length : 0) +
+                                (!string.IsNullOrEmpty(Model.Metodologia) ? Model.Metodologia.Length : 0) +
+                                (!string.IsNullOrEmpty(Model.Resultado) ? Model.Resultado.Length : 0) +
+                                (!string.IsNullOrEmpty(Model.Conclusao) ? Model.Conclusao.Length : 0)
+                                ))
+                        </span>
+                    }
+                    else
+                    {
+                        <span>5000</span>
+                    }
+                </b>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.ToLower').on('input', function (evt) {
+            $(this).val(function (_, val) {
+                return val.toLowerCase();
+            });
+        });
+    });
+    function textCounterClass(field) {
+        var maxlimit = 5000;
+        var countfield = $('.counterCorpo');
+        //var countfield = document.getElementById(field2);
+        var field1 = $("#Introducao").val();
+        var field2 = $("#Objetivo").val();
+        var field3 = $("#Metodologia").val();
+        var field4 = $("#Resultado").val();
+        var field5 = $("#Conclusao").val();
+        var fieldCounter = field1 + field2 + field3 + field4 + field5;
+        if (fieldCounter.length > maxlimit) {
+            var limite = maxlimit - (fieldCounter.length - field.value.length)
+            field.value = field.value.substring(0, limite);
+            return false;
+        } else {
+            countfield.html("Caracteres Restantes: <b>" + (maxlimit - fieldCounter.length) + "</b>");
+            //countfield.innerHTML = "Caracteres Restantes: <b>" + (maxlimit - field.value.length) + "</b>";
+        }
+    }
+</script>

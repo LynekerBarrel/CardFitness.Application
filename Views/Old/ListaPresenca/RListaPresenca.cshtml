@@ -1,0 +1,168 @@
+﻿@model AdmSimposio.Models.ListaPresenca
+@using AdmSimposio.Models.CrossCutting
+
+@{
+    ViewData["Title"] = "Cadastrados";
+    Layout = "_LayoutJsReport-Table";
+}
+
+<div class="container">
+    <div class="container-fluid">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="alinharPaginaLandscape">
+                    <img src="https://siu.univale.br/Temas/Estilo_1/imagens/Banner_Simposio.png" style="width:98%;" class="img-fluid" />
+                    <div class="header-center">
+                        <h2>LISTA DE PRESENÇA</h2>
+                    </div>
+                    <div class="topTable" style="margin-bottom: 10px">
+                        @if (Model.ListaPresencaSimposioTematicos != null && Model.ListaPresencaSimposioTematicos.Count > 0)
+                        {
+                            @foreach (var itemST in Model.ListaPresencaSimposioTematicos)
+                            {
+                                <div style="display:block; margin-bottom: 0px">
+                                    <font style="font-weight:bold">@Html.DisplayFor(modelItem => itemST.SimposioTematico.TituloSimposioTematico)</font>
+                                </div>
+                                <div style="display:block; margin-bottom: 6px">
+                                    Coordenadores (as):
+                                    @foreach (var itemAutor in itemST.SimposioTematico.Autores)
+                                    {
+                                        if (itemST.SimposioTematico.Autores.Count() > 1)
+                                        {
+                                            if (itemAutor != itemST.SimposioTematico.Autores.Last())
+                                            {
+                                                @(itemAutor.Nome)<span>; </span>
+                                            }
+                                            else
+                                            {
+                                                @(itemAutor.Nome)<span>; </span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @(itemAutor.Nome)
+                                        }
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="topTable" style="margin-bottom: 20px">
+                        <div style="display:block; margin-bottom: 1px">Local: @Model.Local</div>
+                        <div style="display:block; margin-bottom: 1px">Data: @Model.DataFinal.ToString("dd/MM/yyyy") de <font style="font-weight:bold">@Model.DataInicial.ToString("HH:mm") às @Model.DataFinal.ToString("HH:mm")</font></div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table-fill" id="tbVisualizarLista">
+                            <col width="2%">
+                            <col width="2%">
+                            <col width="25%">
+                            <col width="15%">
+                            <col width="26%">
+                            <col width="30%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">N.º</th>
+                                    <th class="text-center">ST</th>
+                                    <th class="text-center">Título do Trabalho</th>
+                                    <th class="text-center">Modalidade</th>
+                                    <th class="text-center">Autores com permissão para apresentação</th>
+                                    <th class="text-center">Assinatura do apresentador por extenso</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-hover">
+                                @{
+                                    if (Model.ListaPresencaTrabalhos != null && Model.ListaPresencaTrabalhos.Count() > 0)
+                                    {
+                                        @Html.HiddenFor(x => Model.CodListaPresenca)
+
+                                        foreach (var item in Model.ListaPresencaTrabalhos)
+                                        {
+                                            @Html.HiddenFor(x => item.CodTrabalho)
+
+                                            <tr class="odd gradeX">
+
+
+                                                <td class="text-center">
+                                                    <span>@(Model.ListaPresencaTrabalhos.IndexOf(item) + 1)</span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <span>@Model.ListaPresencaSimposioTematicos.Find(x => x.CodSimposioTematico == item.Trabalho.CodSimposioTematico).SimposioTematico.Sigla</span>
+                                                </td>
+                                                <td class="text-left">
+                                                    @Html.DisplayFor(modelItem => item.Trabalho.Titulo)
+                                                </td>
+                                                <td class="text-left">
+                                                    <p>@Html.DisplayFor(modelItem => item.Trabalho.DescModalidade)</p>
+                                                </td>
+                                                <td class="text-left">
+                                                    @foreach (var itemAutor in item.Trabalho.AutoresModelo)
+                                                    {
+                                                        if ((bool)itemAutor.RegistroComoOuvinte)
+                                                        {
+                                                            if (itemAutor != item.Trabalho.AutoresModelo.Last())
+                                                            {
+                                                            <div style="display:block; margin-bottom: 1px">
+                                                                @Html.DisplayFor(modelItem => itemAutor.Nome);
+                                                            </div>
+                                                            }
+                                                            else
+                                                            {
+                                                            <div style="display:block; margin-bottom: 1px">
+                                                                @(Html.DisplayFor(modelItem => itemAutor.Nome)).
+                                                            </div>
+                                                            }
+                                                        }
+                                                    }
+                                                </td>
+                                                <td class="text-left"></td>
+                                            </tr>
+                                        }
+                                    }
+
+
+                                    @*if (Model.ListaPresencaTrabalhos != null && Model.ListaPresencaTrabalhos.Count() > 0)
+                                        {
+                                            @Html.HiddenFor(x => Model.CodListaPresenca)
+
+                                            foreach (var item in Model.ListaPresencaTrabalhos)
+                                            {
+                                                @Html.HiddenFor(x => item.CodTrabalho)
+                                                @foreach (var itemAutor in item.Trabalho.AutoresModelo)
+                                                {
+                                                    <tr class="odd gradeX">
+
+                                                        @if (itemAutor == item.Trabalho.AutoresModelo.First())
+                                                        {
+
+                                                            <td class="text-center" rowspan="@item.Trabalho.AutoresModelo.Count()">
+                                                                <span>@(Model.ListaPresencaTrabalhos.IndexOf(item) + 1)</span>
+                                                            </td>
+                                                            <td class="text-center" rowspan="@item.Trabalho.AutoresModelo.Count()">
+                                                                <span>@Model.ListaPresencaSimposioTematicos.Find(x => x.CodSimposioTematico == item.Trabalho.CodSimposioTematico).SimposioTematico.Sigla</span>
+                                                            </td>
+                                                            <td class="text-left" rowspan="@item.Trabalho.AutoresModelo.Count()">
+                                                                @Html.DisplayFor(modelItem => item.Trabalho.Titulo)
+                                                            </td>
+                                                        }
+                                                        <td class="text-left">
+                                                            <p>@Html.DisplayFor(modelItem => item.Trabalho.DescModalidade)</p>
+                                                        </td>
+                                                        <td class="text-left">
+                                                            <p>@Html.DisplayFor(modelItem => itemAutor.Nome)</p>
+                                                        </td>
+                                                        <td class="text-left"></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        }*@
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,73 @@
+﻿@model AdmSimposio.Models.TrabalhoInteracaoModelo
+
+<form asp-action="Cancelamento" id="Cancelamento">
+    @Html.HiddenFor(model => model.CodTrabalhoInteracao)
+    <div class="modal-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Confirma o cancelamento desta avaliação? Após cancelar o trabalho irá aparecer novamente na listagens de trabalhos para encaminhar para o avaliador.
+            </div>
+            <div class="panel-body">
+                <div>
+                    <b>Avaliador:</b> @Html.DisplayFor(x => x.Avaliador.Nome)
+                </div>
+                <hr style="margin-top: 10px; margin-bottom: 10px" />
+                <div>
+                    <b>Título do trabalho:</b> @Html.DisplayFor(x => x.Titulo)
+                </div>
+                <hr style="margin-top: 10px; margin-bottom: 10px" />
+                <div>
+                    <b>Sessão Temática:</b> @Html.DisplayFor(x => x.TituloSimposioTematico)
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Justificativa*</label>
+            <textarea asp-for="Comentario" id="ComentarioJustificar"></textarea>
+            @*<p style="color:#808080" id="counterDesc">Caracteres Restantes: <b>3000</b></p>*@
+        </div>
+        <div id="dvMensagemErro" class="alert alert-danger text-black-50" style="font-size: 16px; display:none">
+            Há campos obrigatórios que não foram informados, verifique antes de tentar salvar.
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="button" id="btnConfirmar" value="Confirmar" class="btn btn-success" onclick="Cancelar()" />
+        <button type="button" id="btnCancelar" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+    </div>
+</form>
+
+
+<script>
+
+    function Cancelar() {
+        $('#btnConfirmar').attr("disabled", "disabled");
+        $('#btnCancelar').attr("disabled", "disabled");
+        tinymce.triggerSave()
+        var urlCancelarAvaliacao = '@Url.Action("CancelarAvaliacao", "Avaliacao")';
+        $.ajax({
+            url: urlCancelarAvaliacao,
+            type: 'POST',
+            data: $('#Cancelamento').serialize(),
+            success: function (result) {
+                $('#btnConfirmar').removeAttr("disabled");
+                $('#btnCancelar').removeAttr("disabled");
+                $("#ModalCancelar").modal('hide')
+                if (result.erro) {
+                    NotificaoErro(result.message);
+                }
+                else {
+                     if (ConfirmarOnClick("Deseja ser redirecionado para a tela de encaminhamento de trabalhos?")) {
+                         var url = '@Url.Action("Index", "Avaliacao")' + "?Ambiente=TrabalhosAvaliar";
+                         window.location.href = url;
+                     }
+                     else {
+                         location.reload(true)
+                     }
+                }
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu uma inconsistência no sistema, entre em contato com suporte.");
+            }
+        });
+    }
+</script>

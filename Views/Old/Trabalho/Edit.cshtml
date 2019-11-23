@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Editar Trabalho";
+}
+
+<div class="row" style="padding:30px 20px 20px 20px;">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a data-toggle="modal" data-target="#"><i class="fa fa-chalkboard-teacher fa-fw"></i> Editar Trabalho</a>
+            <div style="float:right">
+                <a href="@Url.Action("Index", "Avaliacao", new { Ambiente = "AcompanharAvaliacao"})"><i class="fa fa-arrow-left fa-fw"></i>Voltar</a>
+            </div>
+
+        </div>
+        <div class="panel-loading">
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+
+        <div id="BodyTrabalho">
+
+        </div>
+    </div>
+</div>
+
+
+@*Documentação para multiple-select: http://wenzhixin.net.cn/p/multiple-select/docs/index.html#methods*@
+
+<script type="text/javascript" charset="utf-8">
+
+    var Ambiente = '@TempData["Ambiente"]';
+    window.onload = function () {
+
+       $.get('@Url.Content("~/Trabalho/MenuPrincipal")' + "?Ambiente=" + Ambiente, function (content) {
+            $("#Menu").html(content);
+        });
+        CallForm();
+    }
+
+    function CallForm() {
+        $('.panel-loading').show();
+        $('#BodyTrabalho').hide();
+        $('#TituloPersistir').val($('#Titulo').val());
+        $('#PalavraChavePersistir').val($('#PalavraChave').val());
+        $('#IntroducaoPersistir').val($('#Introducao').val());
+        $('#ObjetivoPersistir').val($('#Objetivo').val());
+        $('#MetodologiaPersistir').val($('#Metodologia').val());
+        $('#ResultadoPersistir').val($('#Resultado').val());
+        $('#ConclusaoPersistir').val($('#Conclusao').val());
+        $('#DiscussaoPersistir').val($('#Discussao').val());
+        $('#NomeArquivoCompletoPersistir').val($('#NomeArquivoCompleto').val());
+        $('#ArquivoCompletoPersistir').val($('#ArquivoCompleto').val());
+        var url = "LoadEdit";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: $('#Trabalho').serialize(),
+            success: function (result) {
+                if (result.unauthorized) {
+                    location.href = result.redirect;
+                }
+                else {
+                    $('.panel-loading').hide();
+                    $('#BodyTrabalho').empty();
+                    $('#BodyTrabalho').html(result);
+                    $('#BodyTrabalho').show();
+                    if ($("select#CodModalidade").prop('selectedIndex') != 0) {
+                        ShowFormulario();
+                    }
+                }
+            },
+            error: function (xhr, status) {
+                alert(status);
+            }
+        });
+    }
+
+</script>

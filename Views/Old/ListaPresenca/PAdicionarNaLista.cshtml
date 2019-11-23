@@ -1,0 +1,66 @@
+﻿@model AdmSimposio.Models.ListaPresenca
+
+<form asp-action="AdicionarNaLista" id="AdicionarNaLista">
+    @Html.HiddenFor(x => x.CodListaPresenca)
+    @Html.HiddenFor(x => x.CodTrabalho)
+    @Html.HiddenFor(x => x.CodSimposioTematico)
+    <div class="modal-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Escolha a hora que este trabalho será apresentado.
+            </div>
+            <div class="panel-body">
+                <div>
+                    <b>Lista de Presença:</b> @Html.DisplayFor(x => x.Local)
+                </div>
+                <div>
+                    <b>Título do trabalho:</b> @Html.DisplayFor(x => x.Trabalhos.First().Titulo)
+                </div>
+                <div>
+                    <b>Sessão Temática:</b> @Html.DisplayFor(x => x.Trabalhos.First().TituloSimposioTematico)
+                </div>
+                <div>
+                    <b>Data:</b> @Model.DataFinal.ToString("dd/MM/yyyy")
+                </div>
+                <div>
+                    <b>Horário:</b> @Model.DataInicial.ToString("HH:mm") às @Model.DataFinal.ToString("HH:mm")
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <div class="form-group">
+                <label class="control-label">Horário de apresentação</label>
+                <div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input id="btnIncluir" type="button" value="Incluir" class="btn btn-success" onclick="AdicionarNaLista()" />
+        <button id="btnCancelar" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+
+    </div>
+</form>
+
+<script>
+    function AdicionarNaLista() {
+         if (validaForm()){
+             $("#btnIncluir").attr("disabled", "disabled");
+             $("#btnCancelar").attr("disabled", "disabled");
+            var url = '@Url.Action("AdicionarNaLista", "ListaPresenca")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: $('#AdicionarNaLista').serialize(),
+                success: function (result) {
+                    $("#btnIncluir").removeAttr("disabled");
+                    $("#btnCancelar").removeAttr("disabled");
+                        location.reload(true)
+                },
+                error: function (xhr, status) {
+                    NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+                }
+            });
+        }
+    }
+</script>

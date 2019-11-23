@@ -1,0 +1,505 @@
+﻿@model IEnumerable<AdmSimposio.Models.Trabalho>
+@using AdmSimposio.CrossCutting
+
+
+
+@if (TempData["Sucesso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoSucesso('@Html.Raw((string)TempData["Sucesso"])');
+        });
+    </script>
+}
+@if (TempData["Aviso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoAviso('@Html.Raw((string)TempData["Aviso"])');
+        });
+    </script>
+}
+@if (TempData["Erro"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoErro('@Html.Raw((string)TempData["Erro"])');
+        });
+    </script>
+}
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <a><i class="fa fa-tasks fa-fw"></i> Encaminhar trabalhos para avaliação</a>
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <p style="margin-bottom:2px"><b>Trabalhos que estão disponíveis para Avaliação:</b></p>
+                <p style="margin-bottom:2px">Sem convites enviados;</p>
+                <p style="margin-bottom:2px">Com convites enviados, porem cancelados;</p>
+                <p style="margin-bottom:2px">Com convites enviados, porem rejeitados;</p>
+                <p style="margin-bottom:2px">Com convites enviados, porem expirados;</p>
+                <p style="margin-bottom:2px">Com convites aceitos, porem com parecer reprovado e que ainda há avaliações para serem feitas;</p>
+                <p style="margin-bottom:2px">Com convites aceitos, porem com parecer expirado.</p>
+                <p style="margin-bottom:5px">Com convites aceitos, porem com parecer cancelado.</p>
+                <p style="margin-bottom:2px">
+                    <b>Legenda: </b>
+                </p>
+                <p style="margin-bottom:2px">
+                    <img src="~/images/details_open.png" /> Trabalhos sem avaliações &nbsp;&nbsp;  <img src="~/images/details_open_warning.png" /> Trabalhos com avaliações
+                </p>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered" style="width:100%" id="tbTrabalho">
+                <thead>
+                    <tr>
+                        <th>
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.CodTrabalho)
+                        </th>
+                        <th>
+                            Título
+                        </th>
+                        <th>
+                            Modalidade
+                        </th>
+                        <th>
+                            Sessão Temática
+                        </th>
+                        <th>
+                            Etapa
+                        </th>
+                        @*<th>
+                                Tipo
+                            </th>
+                            <th>
+                                CodTipo
+                            </th>*@
+                        @*<th>
+                                Situação
+                            </th>*@
+                        <th>
+                            Opções
+                        </th>
+                    </tr>
+                </thead>
+                @if (Model.Count() > 1)
+                {
+                    <tfoot style="display: table-header-group;">
+                        <tr style="background:#f5f5f5;">
+
+                            <th>
+                            </th>
+                            <th>
+
+                            </th>
+                            <th>
+
+                            </th>
+                            <th>
+
+                            </th>
+                            <th>
+
+                            </th>
+                            <th>
+
+                            </th>
+                            @*<th>
+
+                                </th>
+                                <th>
+
+                                </th>*@
+                            <th>
+
+                            </th>
+                        </tr>
+                    </tfoot>
+                }
+                <tbody>
+                    @{
+                        if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr class="odd gradeX" data-child-historico="@item.Historico">
+                                    <td class="@(item.Historico == "Ainda não houve avaliação para este trabalho." ? "details-control" : "details-control-warning" )"></td>
+
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.CodTrabalho)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.Titulo)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.DescModalidade)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.TituloSimposioTematico)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.DescEtapa)
+                                    </td>
+                                    @*<td style="text-align:center;vertical-align:middle">
+                                                @if (item.AutorLogado.DescTipoTrabalhoAutor == "Autor")
+                                                {
+                                                    <b>@Html.DisplayFor(modelItem => item.AutorLogado.DescTipoTrabalhoAutor)</b>
+                                                }
+                                                else
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.AutorLogado.DescTipoTrabalhoAutor)
+                                                }
+                                            </td>
+                                            <td style="vertical-align:middle">
+                                                @Html.DisplayFor(modelItem => item.AutorLogado.CodTipoTrabalhoAutor)
+                                            </td>
+                                            <td style="text-align:center; vertical-align:middle">
+                                            @if (item.CodSituacaoTrabalho == 2)
+                                            {
+                                                <span class="label label-success" style="font-weight:lighter; font-size:85%; padding-top:4px">Aceita</span>
+                                            }
+                                            else if (item.CodSituacaoTrabalho == 3)
+                                            {
+                                                <span class="label label-warning" style="font-weight:lighter; font-size:85%; padding-top:4px">Com Ressalva</span>
+                                            }
+                                            else if (item.CodSituacaoTrabalho == 4)
+                                            {
+                                                <span class="label label-danger" style="font-weight:lighter; font-size:85%; padding-top:4px">Rejeitada</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="label label-info" style="font-weight:lighter; font-size:85%; padding-top:4px">Pendente</span>
+                                            }
+                                        </td>*@
+
+                                    <td style="text-align:center; vertical-align:middle">
+                                        <div class="dropup">
+                                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="margin:-5px; padding-top:2%; padding-bottom:2%">
+                                                Opções
+                                                <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li>
+                                                    <a disabled href="#" onclick="DownloadTrabalho(@item.CodTrabalho,'docx')">
+                                                        <span class="fa fa-download fa-fw"></span> Visualizar
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a disabled href="#" onclick="EncaminharAvaliador(@item.CodTrabalho)">
+                                                        <span class="fa fa-share fa-fw"></span> Encaminhar
+                                                    </a>
+                                                </li>
+                                                @*@if (ViewBag.EtapaDeTrabalhoAtiva && item.AutorLogado.CodTipoTrabalhoAutor == 1 && ViewBag.SubmissaoTrabahoPago == false)
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("Edit", new { item.CodTrabalho })">
+                                                                <span class="fa fa-edit fa-fw"></span>  Editar
+                                                            </a>
+                                                        </li>
+                                                        if (ViewBag.EtapaDeTrabalhoAtiva && ViewBag.NenhumaSubmissaoTrabalho)
+                                                        {
+                                                            <li>
+                                                                <a disabled href="#" onclick="Excluir(@item.CodTrabalho)" class="confirmarOnClick" data-confirm="Deseja realmente excluir este trabalho?">
+                                                                    <span class="fa fa-trash fa-fw"></span> Excluir
+                                                                </a>
+                                                            </li>
+                                                        }
+
+                                                    }
+                                                    @if (item.CodSituacaoTrabalho == 4)
+                                                    {
+                                                        <li>
+                                                            <a disabled href="#" onclick="Justificativa(@item.CodTrabalho)">
+                                                                <span class="fa fa-exclamation-triangle fa-fw"></span> Justificativa
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                    @if (item.CodSituacaoTrabalho == 3)
+                                                    {
+                                                        <li>
+                                                            <a disabled href="#" onclick="Justificativa(@item.CodTrabalho)">
+                                                                <span class="fa fa-exclamation-triangle fa-fw"></span> Ressalva
+                                                            </a>
+                                                        </li>
+                                                    }*@
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="AjudaTrabalho" tabindex="-1" role="dialog" aria-labelledby="AjudaSimposio" aria-hidden="true">
+    <div class="modal-dialog" role="document" style=" height: 60%">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Ajuda - Trabalho</h4>
+            </div>
+            <div class="modal-body" style="font-family: Calibri; height:450px;display:block; overflow-y:scroll;width:100%;">
+                @*<div class="panel panel-default">
+                        <div class="panel-heading">
+                            Para criar uma nova propositura, basta clicar no link que está no canto superior direito, conforme demonstrado na imagem.
+                        </div>
+                        <div class="panel-body">
+                            <img src="~/images/Ajuda/Propositura/Index/Nova.png" class="img-responsive" style="width: 700px" />
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <p> Para editar uma propositura basta clicar no botão “Opções” referente a propositura desejada. Uma caixa de opções irá se abrir, clique em "Editar".</p>
+                            <p><b>Importante: </b> Só será possível realizar edições em proposituras cujo o status seja pendente.</p>
+                            <p><b>Importante: </b> Não será possível editar proposituras de simpósios antigos.</p>
+                            <p> Veja abaixo:</p>
+                        </div>
+                        <div class="panel-body">
+                            <img src="~/images/Ajuda/Propositura/Index/Editar.png" class="img-responsive" style="width: 700px" />
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <p> Para deletar uma propositura basta clicar no botão “Opções” referente a propositura desejada. Uma caixa de opções irá se abrir, clique em "Deletar".</p>
+                            <p><b>Importante: </b> Só será possível deletar proposituras cujo o status seja pendente.</p>
+                            <p><b>Importante: </b> Não será possível deletar proposituras de simpósios antigos.</p>
+                            <p> Veja abaixo:</p>
+                        </div>
+                        <div class="panel-body">
+                            <img src="~/images/Ajuda/Propositura/Index/Excluir.png" class="img-responsive" style="width: 700px" />
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <p> Para visualizar detalhes de uma propositura basta clicar no botão “Opções” referente a propositura desejada. Uma caixa de opções irá se abrir, clique em "Detalhes".</p>
+                            <p> Veja abaixo:</p>
+                        </div>
+                        <div class="panel-body">
+                            <img src="~/images/Ajuda/Propositura/Index/Detalhes.png" class="img-responsive" style="width: 700px" />
+                        </div>
+                        <div class="panel-heading" style="border-top: 1px solid #ddd;">
+                            <p> Caso sua propositura seja rejeitada, você poderá visualizar o motivo da rejeição. Basta clicar no botão “Opções” referente a propositura desejada. Uma caixa de opções irá se abrir, clique em "Justificativa".</p>
+                            <p> Veja abaixo:</p>
+                        </div>
+                        <div class="panel-body">
+                            <img src="~/images/Ajuda/Propositura/Index/Justificativa.png" class="img-responsive" style="width: 700px" />
+                        </div>
+                    </div>
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <p> Uma vez que sua propositura for avaliada, ela será aceita ou rejeitada pelo nosso time. Você poderá ver o resultado dessa avaliação na coluna "Situação".</p>
+                            <p> Veja abaixo:</p>
+                        </div>
+                        <div class="panel-body">
+                            <img src="~/images/Ajuda/Propositura/Index/Situacao.png" class="img-responsive" style="width: 700px" />
+                        </div>
+                    </div>*@
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok, entendi!</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="ModalEncaminharAvaliador" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="min-width: 740px">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Escolha um avaliador</h4>
+            </div>
+            <div id="PartialEncaminharAvaliador"></div>
+            <div class="modal-footer">
+                <button id="btnFecharModal" type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalJustificativa" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div id="PartialJustificativa">
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function Justificativa(codigoTrabalhoInteracao) {
+        var url = '@Url.Action("Justificativa", "Avaliacao", new { CodTrabalhoInteracao = "Codigo" })'.replace("Codigo", codigoTrabalhoInteracao);
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function (result) {
+                $('#PartialJustificativa').html(result);
+                $('#ModalJustificativa').modal({ backdrop: 'static', keyboard: false });
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+            }
+        });
+    }
+    function EncaminharAvaliador(val) {
+        $('#PartialIndex').hide();
+        $('.panel-loading').show();
+        var url =  '@Url.Action("EncaminharAvaliador", "Avaliacao", new { CodTrabalho = "CodigoTrabalho" })'.replace("CodigoTrabalho", val);
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function (result) {
+                $('.panel-loading').hide();
+                $('#PartialIndex').show();
+                if (result.erro) {
+                    NotificaoErro(result.message);
+                }
+                else {
+                    $('#PartialEncaminharAvaliador').html(result);
+                    $('#ModalEncaminharAvaliador').modal({ backdrop: 'static', keyboard: false });
+                }
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+            }
+        });
+    }
+    function DownloadTrabalho(CodTrabalho, FormatoExportacao) {
+        $('#PartialIndex').hide();
+        $('.panel-loading').show();
+        var url = '@Url.Action("DownloadTrabalho", "Avaliacao", new { CodTrabalho = "CodigoTrabalho", FormatoExportacao = "docx" })'.replace("CodigoTrabalho", CodTrabalho).replace("&amp;", "&");
+        //var url = "DownloadTrabalho?CodTrabalho=" + CodTrabalho + "&FormatoExportacao=" + FormatoExportacao;
+        console.log('url>: ' + url);
+        $.ajax({
+            url: url,
+            type: 'POST',
+            success: function (result) {
+                $('.panel-loading').hide();
+                $('#PartialIndex').show();
+                window.open(result.linkRedirect)
+                NotificaoSucesso(result.message);
+            },
+            error: function (xhr, status) {
+                NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+            }
+        });
+    }
+    $(document).ready(function () {
+
+        var table =  $('#tbTrabalho').DataTable({
+            initComplete: function () {
+                this.api().columns([ 2, 3, 4, 5]).every(function () {
+                    var column = this;
+                    var select = $('<select style="width:100%"><option value=""></option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex(
+                                $(this).val()
+                            );
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d, j) {
+                        var val = $('<div/>').html(d).text();
+                        select.append('<option value="' + val + '">' + val + '</option>');
+                    });
+                });
+            },
+            "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
+            "pageLength": 25,
+            "order": [[1, "desc"]],
+            columnDefs: [{
+                'targets': [1],
+                'visible': false,
+                'searchable': false
+            }
+                //    ,{
+                //    targets: 1,
+                //    render: function (data, type, row) {
+                //        return data.length > 70 ?
+                //            data.substr(0, 70) + '…' :
+                //            data;
+                //    }
+                //}
+            ],
+            responsive: true,
+            language: {
+                processing: "Processando...",
+                search: "Procurar:",
+                lengthMenu: "Mostrar _MENU_ registros",
+                info: "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                infoEmpty: "Mostrando de 0 até 0 de 0 registros",
+                infoFiltered: "(filtrado de _MAX_ registros no total)",
+                infoPostFix: "",
+                loadingRecords: "Carregando registros...",
+                zeroRecords: "Não foi encontrado nenhum resultado",
+                emptyTable: "Não há nenhum dado disponível na tabela",
+                paginate: {
+                    first: "Primeiro",
+                    previous: "Anterior",
+                    next: "Próximo",
+                    last: "Último"
+                },
+                aria: {
+                    sortAscending: ": Ordenar colunas de forma ascendente",
+                    sortDescending: ": Ordenar colunas de forma descendente"
+                }
+
+            }
+        });
+
+        $('#tbTrabalho tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child(format(tr.data('child-historico'))).show();
+                tr.addClass('shown');
+            }
+        });
+        $('#tbTrabalho tbody').on('click', 'td.details-control-warning', function () {
+            var tr = $(this).closest('tr');
+            var row = table.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child(format(tr.data('child-historico'))).show();
+                tr.addClass('shown');
+            }
+        });
+    });
+
+    function format(historico) {
+        return historico;
+    }
+
+</script>

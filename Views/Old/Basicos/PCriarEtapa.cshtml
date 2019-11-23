@@ -1,0 +1,33 @@
+﻿@model AdmSimposio.Models.Etapa
+
+<script src="~/js/SimposioValidate.js"></script>
+<div class="col-sm-12" style="margin-top: 10px">
+    <div id="response"></div>
+</div>
+<form asp-action="CriarEtapa">
+    <div class="modal-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @Html.HiddenFor(model => model.CodSimposio)
+        <div class="form-group text-center">
+            <h4>@Html.DisplayFor(model => model.Simposio.TituloReduzido)</h4>
+        </div>
+        <div class="form-group">
+            <label asp-for="DescEtapa" class="control-label"></label>
+            <input asp-for="DescEtapa" class="form-control obrigatorio" placeholder="Ex.: 1ª Etapa" />
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label asp-for="DataInicioEtapa" class="control-label"></label>
+                <input asp-for="DataInicioEtapa" class="form-control obrigatorio" onblur="ChecarDataInicioModal(this, '#DataFimEtapa');" />
+            </div>
+            <div class="form-group col-sm-6">
+                <label asp-for="DataFimEtapa" class="control-label"></label>
+                <input asp-for="DataFimEtapa" class="form-control obrigatorio" onblur="ChecarDataFimModal(this, '#DataInicioEtapa');" />
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" value="Criar" class="btn btn-success" onclick="if ( ! validaForm(this)) return false;" />
+        <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+    </div>
+</form>

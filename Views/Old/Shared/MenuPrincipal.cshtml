@@ -1,0 +1,88 @@
+﻿@model IEnumerable<AdmSimposio.Models.MenuItem>
+
+<script>
+    $(function () {
+        $('#side-menu').metisMenu({
+            toggle: false // disable the auto collapse. Default: true.
+        });
+    });
+</script>
+@if (Model != null)
+{
+    <div class="text-center" style="margin-top:20px">
+        <div align="center">
+            <img src="~/images/nobody_m.original.jpg" id="profile-image" class="img-circle img-responsive">
+            <div class="profile-usertitle-name">@ViewBag.ProfileUser</div>
+            <span class="Simposio-Help">@ViewBag.SimposioAtivo</span>
+        </div>
+        <br />
+    </div>
+    <ul id="side-menu" class="nav">
+        @foreach (var item in Model)
+        {
+            <li>
+                @if (item.Ambiente == null)
+                {
+                    if (item.SubMenu != null)
+                    {
+                        <a class="@item.Status" href="#"><i class="fa @item.Icon fa-fw"></i> @item.LinkNome <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse" aria-expanded="true" style="">
+                            @foreach (var itemSub in item.SubMenu)
+                            {
+                                if (itemSub.Ambiente == null)
+                                {
+                                    <li>
+                                        <a class="@itemSub.Status" href="@Url.Action(itemSub.LinkAction, itemSub.LinkController)">@itemSub.LinkNome</a>
+                                    </li>
+                                }
+                                else
+
+                                {
+                                    <li>
+                                        <a class="@itemSub.Status" href="@Url.Action(itemSub.LinkAction, itemSub.LinkController, new { Ambiente = itemSub.Ambiente })">@itemSub.LinkNome</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <a class="@item.Status" href="@Url.Action(item.LinkAction, item.LinkController)"><i class="fa @item.Icon fa-fw"></i> @item.LinkNome</a>
+                    }
+                }
+                else
+                {
+                    if (item.SubMenu != null)
+                    {
+                        <a class="@item.Status" href="#"><i class="fa @item.Icon fa-fw"></i> @item.LinkNome <span class="fa arrow"></span></a>
+                        <ul class="nav nav-second-level collapse" aria-expanded="true" style="">
+                            @foreach (var itemSub in item.SubMenu)
+                            {
+                                if (itemSub.Ambiente == null)
+                                {
+                                    <li>
+                                        <a class="@itemSub.Status" href="@Url.Action(itemSub.LinkAction, itemSub.LinkController)">@itemSub.LinkNome</a>
+                                    </li>
+                                }
+                                else
+
+                                {
+                                    <li>
+                                        <a class="@itemSub.Status" href="@Url.Action(itemSub.LinkAction, itemSub.LinkController, new { Ambiente = itemSub.Ambiente })">@itemSub.LinkNome</a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <a class="@item.Status" href="@Url.Action(item.LinkAction, item.LinkController, new { Ambiente = item.Ambiente })"><i class="fa @item.Icon fa-fw"></i> @item.LinkNome</a>
+                    }
+                }
+            </li>
+        }
+        <li>
+            <a href="@Url.Action("LogOut", "Home")"><i class="fa fa-sign-out-alt fa-fw"></i> Sair</a>
+        </li>
+    </ul>
+}

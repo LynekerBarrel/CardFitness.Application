@@ -1,0 +1,89 @@
+﻿@model AdmSimposio.Models.Trabalho
+
+<script src="~/js/SimposioValidate.js"></script>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="view-titulo-tab line-bottom">
+            <div class="pull-left">
+                <h4>Formulário</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <label asp-for="Titulo" class="control-label">Título*</label>
+            <input asp-for="Titulo" onblur="textCounter(this, 'counterTitulo', 200);" onkeyup="textCounter(this, 'counterTitulo', 200);" class="form-control obrigatorio" type="text" />
+            @*<p style="color:#808080" id="counterTitulo">Caracteres Restantes: <b>@(200 - Model.Titulo.Length)</b></p>*@
+            <p style="color:#808080" id="counterTitulo">
+                Caracteres Restantes: <b>
+                    @if (!String.IsNullOrEmpty(Model.Titulo))
+                    {
+                        <span>
+                            @(200 - Model.Titulo.Length)
+                        </span>
+                    }
+                    else
+                    {
+                        <span>200</span>
+                    }
+                </b>
+            </p>
+        </div>
+        <div class="form-group">
+            <label asp-for="PalavraChave" class="control-label">Palavras Chave*</label>
+            @*<input asp-for="PalavraChave" onkeyup="textCounter(this, 'counterPalavraChave', 150);" class="form-control obrigatorio" type="text" />*@
+            <input asp-for="PalavraChave" onblur="textCounter(this, 'counterPalavraChave', 150);" onkeyup="textCounter(this, 'counterPalavraChave', 200);"  class="form-control obrigatorio ToLower"
+                   type="text"
+                   data-placement="top"
+                   data-toggle="tooltip"
+                   data-html="true"
+                   title="<i class='fa fa-exclamation-triangle fa-fw'></i> Neste campo deverá ser informado as palavras chave referente ao assunto do trabalho separados com vírgulas(,). Ex.: cachorro, gato, ovelha" />
+            @*<p style="color:#808080" id="counterPalavraChave">Caracteres Restantes: <b>@(150 - Model.PalavraChave.Length)</b></p>*@
+            <p style="color:#808080" id="counterPalavraChave">
+                Caracteres Restantes: <b>
+                    @if (!String.IsNullOrEmpty(Model.PalavraChave))
+                    {
+                        <span>
+                            @(150 - Model.PalavraChave.Length)
+                        </span>
+                    }
+                    else
+                    {
+                        <span>150</span>
+                    }
+                </b>
+            </p>
+        </div>
+        <div class="form-group">
+            <label asp-for="Discussao" class="control-label">Resumo da proposta*</label>
+            @Html.TextAreaFor(m => m.Discussao, new { @class = "form-control obrigatorio", @style = "height:320px", @onblur = "textCounter(this,'counterIntroducao', 1800);", @onkeyup = "textCounter(this,'counterIntroducao', 1800);" })
+            <p style="color:#808080" id="counterIntroducao">
+                Caracteres Restantes: <b>
+                    @if (!String.IsNullOrEmpty(Model.Discussao))
+                    {
+                        <span>
+                            @(1800 - Model.Discussao.Length)
+                        </span>
+                    }
+                    else
+                    {
+                        <span>1800</span>
+                    }
+                </b>
+            </p>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('.ToLower').on('input', function (evt) {
+            $(this).val(function (_, val) {
+                return val.toLowerCase();
+            });
+        });
+    });
+</script>

@@ -1,0 +1,52 @@
+﻿.navbar {
+    margin-bottom: 0px !important;
+}
+
+.custom {
+    background: #004077;
+}
+
+.navbar-brand {
+    float: left;
+    height: 50px;
+    padding: 15px 15px;
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: normal;
+    font-family: Arial;
+}
+
+.footer {
+    background-color: #f8f8f8;
+    border: 1px solid #e7e7e7;
+    min-height: 50px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 9999;
+}
+
+.img-footer {
+    display: block;
+    padding-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: auto;
+    height: 40px;
+}
+
+
+.view-titulo-tab.line-bottom {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 22px;
+}
+
+.view-titulo-tab {
+    padding-top: 20px;
+    padding-bottom: 53px;
+}
+
+    .view-titulo-tab h4 {
+        font-size: 23px;
+        font-weight: 100;
+    }

@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Adm Simpósio - @ViewData["Title"]</title>
+    <environment include="Development">
+        <link rel="SHORTCUT ICON" href="http://www.siu.univale.br/AdmSimposio/images/logo_siu.ico" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link href="~/vendor/css/site.css" rel="stylesheet" />
+        <link href="~/Notify/css/animate.css" rel="stylesheet" />
+        <link href="~/css/Simposio.css" rel="stylesheet" />
+    </environment>
+    <environment include="Staging,Production">
+        <link rel="SHORTCUT ICON" href="http://www.siu.univale.br/AdmSimposio/images/logo_siu.ico" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link href="~/vendor/css/site.css" rel="stylesheet" />
+        <link href="~/Notify/css/animate.css" rel="stylesheet" />
+        <link href="~/css/Simposio.css" rel="stylesheet" />
+    </environment>
+</head>
+<body>
+    <nav class="navbar navbar-default custom navbar-static-top" role="navigation" style="height:50px;">
+        <div class="navbar-header">
+            <a class="navbar-brand" style="color:white; padding-left:16px; padding-top:7px !important" href="@Url.Action("Index","Login")">Adm Simpósio</a>
+        </div>
+    </nav>
+    <main role="main" class="pb-4 mt-5">
+        @RenderBody()
+    </main>
+    <footer class="footer">
+        <img class="img-footer" src="~/images/FPF_DISGI.png" />
+    </footer>
+ 
+</body>
+</html>

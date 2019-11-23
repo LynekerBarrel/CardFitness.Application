@@ -1,0 +1,138 @@
+﻿@model AdmSimposio.Models.TrabalhoInteracaoModelo
+
+<script>
+    function ProrrogarAvaliacao() {
+            $('#dvMensagemErro').css('display', 'none');
+            $("#DiasProrrogar").removeClass("input-erro");
+            $("#DiasProrrogar").addClass("input-sucesso");
+            if ($("#DiasProrrogar").val() > 0) {
+                $('#btnProrrogar').attr("disabled", "disabled");
+                $('#btnCancelar').attr("disabled", "disabled");
+                var urlProrrogar = '@Url.Action("ProrrogarAvaliacao", "Avaliacao")';
+                $.ajax({
+                    url: urlProrrogar,
+                    type: 'POST',
+                    data: $('#ProrrogarAvaliacao').serialize(),
+                    success: function (result) {
+                        $('#btnProrrogar').removeAttr("disabled");
+                        $('#btnCancelar').removeAttr("disabled");
+                        $("#ModalProrrogar").modal('hide')
+                        if (result.erro) {
+                            NotificaoErro(result.message);
+                        }
+                        else {
+                            location.reload(true)
+                        }
+                    },
+                    error: function (xhr, status) {
+                        NotificaoErro("Ocorreu uma inconsistência no sistema, entre em contato com suporte.");
+                    }
+                });
+            }
+            else {
+                $("#DiasProrrogar").removeClass("input-sucesso");
+                $("#DiasProrrogar").addClass("input-erro");
+                $('#dvMensagemErro').removeAttr("style");
+                $('#dvMensagemErro').css('margin-top', '15px');
+            }
+    }
+    //$(document).ready(function () {
+    //    var qtd = $("#DiasProrrogar").val();
+
+    //    $(".mais").on('click', function () {
+
+    //    });
+    //    $(".menos").on('click', function () {
+
+    //    });
+    //});
+
+    jQuery(function () {
+        var j = jQuery; //Just a variable for using jQuery without conflicts
+        var addInput = '#DiasProrrogar'; //This is the id of the input you are changing
+        var n = 0; //n is equal to 1
+
+        //Set default value to n (n = 1)
+        j(addInput).val(n);
+
+        var date = new Date();
+
+        //On click add 1 to n
+        j('.mais').on('click', function () {
+            j(addInput).val(++n);
+
+            console.log('toki + : ' + j(addInput).val() );
+            $("#dtExpira").html(date.addDays(j(addInput).val()));
+        })
+
+        j('.menos').on('click', function () {
+            //If n is bigger or equal to 1 subtract 1 from n
+            if (n >= 1) {
+                j(addInput).val(--n);
+                $("#dtExpira").html(date.addDays(j(addInput).val()));
+            } else {
+                //Otherwise do nothing
+            }
+        });
+    });
+    Date.prototype.addDays = function (days) {
+        var date = new Date(@Model.DataExpiracao.Year , @(Model.DataExpiracao.Month -1) , @Model.DataExpiracao.Day);
+        console.log('date old: ' + date);
+        console.log('date getdate: ' + date.getDate());
+        console.log('date sum: ' + date.getDate() + parseInt(days,10));
+        date.setDate(date.getDate() + parseInt(days, 10));
+        console.log('date new: ' + date);
+        return date.toLocaleDateString();
+    }
+</script>
+<form asp-action="ProrrogarAvaliacao" id="ProrrogarAvaliacao">
+    @Html.HiddenFor(model => model.CodTrabalhoInteracao)
+    @Html.HiddenFor(model => model.DataExpiracao)
+    <div class="modal-body">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Escolha quantidade de dias que você deseja prorrogar para a avaliação deste trabalho.
+            </div>
+            <div class="panel-body">
+                <div>
+                    <b>Avaliador:</b> @Html.DisplayFor(x => x.Avaliador.Nome)
+                </div>
+                <div>
+                    <b>Título do trabalho:</b> @Html.DisplayFor(x => x.Titulo)
+                </div>
+                <div>
+                    <b>Sessão Temática:</b> @Html.DisplayFor(x => x.TituloSimposioTematico)
+                </div>
+                <div>
+                    <b>Data de Expiração:</b> @Html.DisplayFor(x => x.DataExpiracao)
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <div class="form-group">
+                <label class="control-label">Quantidade de dias a acrescentar </label>
+                <div>
+                    <button class="btn btn-primary menos" type="button" style="margin-top: -2px">
+                        <i class="fa fa-minus fa-fw"></i>
+                    </button>
+                    <input asp-for="DiasProrrogar" class="form-control" type="text" style="display:inline !important; width:50px !important" />
+                    <button class="btn btn-primary mais" type="button" style="margin-top: -2px">
+                        <i class="fa fa-plus fa-fw"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Data nova da expiração</label>
+                <div id="dtExpira">
+                </div>
+            </div>
+        </div>
+        <div id="dvMensagemErro" class="alert alert-danger text-black-50" style="font-size: 16px; display:none">
+            Há campos obrigatórios que não foram informados, verifique antes de tentar salvar.
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="button" id="btnProrrogar" value="Confirmar" class="btn btn-success" onclick="ProrrogarAvaliacao()" />
+        <button type="button" id="btnCancelar" class="btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
+    </div>
+</form>

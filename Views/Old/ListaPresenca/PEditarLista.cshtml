@@ -1,0 +1,57 @@
+﻿@model AdmSimposio.Models.ListaPresenca
+
+<form asp-action="EditarLista" id="ListaPresencaEditar">
+    @Html.HiddenFor(x=>x.CodListaPresenca)
+    @Html.HiddenFor(x=>x.CodSimposio)
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label">Local</label>
+            <input asp-for="Local" class="form-control obrigatorio" placeholder="Ex.: Sala ED 202" />
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label asp-for="DataInicial" class="control-label">Data Inicial</label>
+                    <input asp-for="DataInicial" class="form-control obrigatorio" />
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label asp-for="DataFinal" class="control-label">Data Final</label>
+                    <input asp-for="DataFinal" class="form-control obrigatorio" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input id="btnEditar" type="button" value="Alterar" class="btn btn-success" onclick="EditarLista()" />
+        <button id="btnCancelar" type="button" class="btn btn-primary" aria-label="Close" onclick="FecharModalEditar()">Cancelar</button>
+    </div>
+</form>
+
+<script>
+    function FecharModalEditar() {
+        $('#ModalEditarLista').modal('hide');
+        $('#ListaPresencaEditar').remove();
+    }
+    function EditarLista() {
+         if (validaForm()){
+             $("#btnEditar").attr("disabled", "disabled");
+             $("#btnCancelar").attr("disabled", "disabled");
+            var url = '@Url.Action("EditarLista", "ListaPresenca")';
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: $('#ListaPresencaEditar').serialize(),
+                success: function (result) {
+                    $("#btnEditar").removeAttr("disabled");
+                    $("#btnCancelar").removeAttr("disabled");
+                        location.reload(true)
+                },
+                error: function (xhr, status) {
+                    NotificaoErro("Ocorreu um erro inesperado. Tente novamente, se o erro persistir entre em contato com nosso suporte.");
+                }
+            });
+        }
+    }
+</script>

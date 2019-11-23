@@ -1,0 +1,497 @@
+﻿@model AdmSimposio.Models.Basico
+@using AdmSimposio.CrossCutting
+<script src="~/js/Simposio.js"></script>
+<script src="~/vendor/datatables/js/jquery.dataTables.min.js"></script>
+<script src="~/vendor/datatables/js/dataTables.bootstrap.min.js"></script>
+@if (TempData["Sucesso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoSucesso('@Html.Raw((string)TempData["Sucesso"])');
+        });
+    </script>
+}
+@if (TempData["Aviso"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoAviso('@Html.Raw((string)TempData["Aviso"])');
+        });
+    </script>
+}
+@if (TempData["Erro"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function () {
+            NotificaoErro('@Html.Raw((string)TempData["Erro"])');
+        });
+    </script>
+}
+
+@if (TempData["message"] != null)
+{
+    <script type="text/javascript" charset="utf-8">
+        alert("@Html.Raw((string)TempData["message"])");
+        window.location.href = "Basicos/Index";
+
+    </script>
+}
+<script type="text/javascript">
+
+    var urlCriarEtapa = '@Url.Action("CriarEtapa", "Basicos")';
+    var EditEtapa = function (strCodEtapa) {
+        var urlEditarEtapa = '@Url.Action("EditarEtapa", "Basicos", new { CodEtapa = "Codigo" })'.replace("Codigo", strCodEtapa);
+        EditarEtapa(urlEditarEtapa);
+    }
+
+    var urlCriarCategoria = '@Url.Action("CriarCategoria", "Basicos")';
+    var EditCategoria = function (strCodCategoria) {
+        var urlEditarCategoria = '@Url.Action("EditarCategoria", "Basicos", new { CodCategoria = "Codigo" })'.replace("Codigo", strCodCategoria);
+        EditarCategoria(urlEditarCategoria);
+    }
+
+    var urlCriarModalidade = '@Url.Action("CriarModalidade", "Basicos")';
+    var EditModalidade = function (strCodModalidade) {
+        var urlEditarModalidade = '@Url.Action("EditarModalidade", "Basicos", new { CodModalidade = "Codigo" })'.replace("Codigo", strCodModalidade);
+        EditarModalidade(urlEditarModalidade);
+    }
+
+    $(document).ready(function () {
+        $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+            localStorage.setItem('activeTab', $(e.target).attr('href'));
+        });
+        var activeTab = localStorage.getItem('activeTab');
+        if (activeTab) {
+            $('#TabBasicos a[href="' + activeTab + '"]').tab('show');
+        }
+    });
+</script>
+
+
+<div class="panel-body">
+    <ul class="nav nav-tabs" id="TabBasicos">
+        <li class="active">
+            <a href="#etapa" data-toggle="tab">Etapa</a>
+        </li>
+        <li class="@Html.Raw((string)TempData["DisableCategoria"])">
+            <a href="#categoria" data-toggle="tab">Categoria</a>
+        </li>
+        <li class="@Html.Raw((string)TempData["DisableCategoria"])">
+            <a href="#modalidade" data-toggle="tab">Modalidade</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="etapa">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="view-titulo-tab line-bottom">
+                        <div class="pull-left">
+                            <div>
+                                <label class="Simposio-Help">(@Model.SimposioTituloReduzido)</label>
+                                <h4 style="display:inline">Etapas</h4>
+                            </div>
+                        </div>
+                        @if (VerificarPerfil.Validar("AdmSimposio/Basicos/EtapaCriar"))
+                        {
+                            <div class="pull-right">
+                                <a href="#" onclick="CriarEtapa()"><span class="btn btn-primary">Novo</span></a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered" style="width:100%" id="tbEtapa">
+                    <thead>
+                        <tr>
+                            <th>
+                                Título
+                            </th>
+                            <th>
+                                Data Início
+                            </th>
+                            <th>
+                                Data Fim
+                            </th>
+                            <th> Opções</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            if (Model != null)
+                            {
+                                foreach (var item in Model.Etapas)
+                                {
+                                    <tr id="linha" class="odd gradeX">
+                                        <td style="vertical-align:middle">
+                                            @Html.DisplayFor(modelItem => item.DescEtapa)
+                                        </td>
+                                        <td style="vertical-align:middle">
+                                            @Html.DisplayFor(modelItem => item.DataInicioEtapa)
+                                        </td>
+                                        <td style="vertical-align:middle">
+                                            @Html.DisplayFor(modelItem => item.DataFimEtapa)
+                                        </td>
+                                        <td style="text-align:center; vertical-align:middle">
+                                            @if (VerificarPerfil.Validar("AdmSimposio/Basicos/EtapaCriar"))
+                                            {
+                                                <div class="dropup">
+                                                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style="padding-top:2%; padding-bottom:2%">
+                                                        Opções
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-right">
+                                                        <li><a href="#" onclick="EditEtapa(@item.CodEtapa)"><span class="fa fa-edit fa-fw"></span>  Editar</a></li>
+                                                    </ul>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="dropup">
+                                                    <button class="btn btn-default dropdown-toggle" disabled type="button" data-toggle="dropdown" style="padding-top:2%; padding-bottom:2%">
+                                                        Opções
+                                                        <span class="caret"></span>
+                                                    </button>
+                                                </div>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="tab-pane fade in" id="categoria">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="view-titulo-tab line-bottom">
+                        <div class="pull-left">
+                            <div>
+                                <label class="Simposio-Help">(@Model.SimposioTituloReduzido)</label>
+                                <h4 style="display:inline">Categorias</h4>
+                            </div>
+                        </div>
+                        @if (VerificarPerfil.Validar("AdmSimposio/Basicos/CategoriaCriar"))
+                        {
+                            <div class="pull-right">
+                                <a href="#" onclick="CriarCategoria()"><span class="btn btn-primary">Novo</span></a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="row stylish-panel" style="padding-top: 0px !important">
+                @foreach (var item in Model.Categorias)
+                {
+                    <div class="col-sm-12 text-left">
+                        <div class="col-sm-12" style="padding:16px 20px 7px 25px;margin-bottom:10px;">
+                            <div class="col-sm-12">
+                                <p class="title-Help">
+                                    @Html.DisplayFor(modelItem => item.DescCategoria) -   @Html.DisplayFor(modelItem => item.CargaHoraria) Horas
+                                </p>
+                            </div>
+                            @if (item.etapasCategorias != null)
+                            {
+                                @foreach (var itemEtapa in item.etapasCategorias)
+                                {
+                                    @if (DateTime.Now > @itemEtapa.Etapa.DataInicioEtapa && DateTime.Now < @itemEtapa.Etapa.DataFimEtapa)
+                                    {
+                                        <div class="col-sm-2 text-left" style="margin-bottom:9px">
+                                            <div class="desc-Help">
+                                                <label>
+                                                    @Html.DisplayFor(modelItem => itemEtapa.Etapa.DescEtapa)
+                                                </label>
+                                            </div>
+                                            <div class="desc-Help">
+                                                <label>de @itemEtapa.Etapa.DataInicioEtapa</label>
+                                            </div>
+                                            <div class="desc-Help">
+                                                <label>até @itemEtapa.Etapa.DataFimEtapa</label>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-sm-2 text-left">
+                                            <div class="descDisable-Help">
+                                                <label>
+                                                    @Html.DisplayFor(modelItem => itemEtapa.Etapa.DescEtapa)
+                                                </label>
+                                            </div>
+                                            <div class="descDisable-Help">
+                                                <label>de @itemEtapa.Etapa.DataInicioEtapa</label>
+                                            </div>
+                                            <div class="descDisable-Help">
+                                                <label>até @itemEtapa.Etapa.DataFimEtapa</label>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                            @if (VerificarPerfil.Validar("AdmSimposio/Basicos/CategoriaAtualizar"))
+                            {
+                                <a href="#" class="more_link" onclick="EditCategoria(@item.CodCategoria)">
+
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="tab-pane fade in" id="modalidade">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="view-titulo-tab line-bottom">
+                        <div class="pull-left">
+                            <div>
+                                <label class="Simposio-Help">(@Model.SimposioTituloReduzido)</label>
+                                <h4 style="display:inline">Modalidades</h4>
+                            </div>
+                        </div>
+                        @if (VerificarPerfil.Validar("AdmSimposio/Basicos/ModalidadeCriar"))
+                        {
+                            <div class="pull-right">
+                                <a href="#" onclick="CriarModalidade()"><span class="btn btn-primary">Novo</span></a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            @{List<int> listaCateg = new List<int>();}
+            @foreach (var itemMod in Model.Modalidades)
+            {
+                if (!listaCateg.Contains((int)itemMod.CodModalidade))
+                {
+                    <div class="panel panel-default">
+                        <div class="panel-heading text-center title-Card-Help">
+                            @itemMod.categoria.DescCategoria
+                        </div>
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+
+                            @{ int categ = itemMod.CodCategoria;}
+                            @foreach (var item in Model.Modalidades)
+                            {
+                                if (item.CodCategoria == categ && !listaCateg.Contains((int)item.CodModalidade))
+                                {
+                                    listaCateg.Add((int)item.CodModalidade);
+
+                                    <div class="row stylish-panel" style="padding-top: 0px !important">
+                                        <div class="col-sm-12 text-left">
+                                            <div class="col-sm-12" style="padding:16px 20px 7px 0px;margin-bottom:10px;">
+                                                <div class="col-sm-8">
+
+                                                    <div class="col-sm-12">
+                                                        <p class="title-Help">
+                                                            @Html.DisplayFor(modelItem => item.DescModalidade)
+                                                        </p>
+                                                    </div>
+
+                                                    @if (item.EtapasModalidades != null)
+                                                    {
+                                                        @foreach (var itemEtapa in item.EtapasModalidades)
+                                                        {
+                                                            @if (DateTime.Now > @itemEtapa.EtapaCategoria.Etapa.DataInicioEtapa && DateTime.Now < @itemEtapa.EtapaCategoria.Etapa.DataFimEtapa)
+                                                            {
+                                                                <div class="col-sm-4 text-left" style="margin-bottom:9px">
+                                                                    <div class="desc-Help">
+                                                                        <label>
+                                                                            @Html.DisplayFor(modelItem => itemEtapa.EtapaCategoria.Etapa.DescEtapa) - R$ @Html.DisplayFor(modelItem => itemEtapa.Valor)
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="desc-Help">
+                                                                        <label>de @itemEtapa.EtapaCategoria.Etapa.DataInicioEtapa</label>
+                                                                    </div>
+                                                                    <div class="desc-Help">
+                                                                        <label>até @itemEtapa.EtapaCategoria.Etapa.DataFimEtapa</label>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="col-sm-4 text-left" style="margin-bottom:9px">
+                                                                    <div class="descDisable-Help">
+                                                                        <label>
+                                                                            @Html.DisplayFor(modelItem => itemEtapa.EtapaCategoria.Etapa.DescEtapa) - R$ @Html.DisplayFor(modelItem => itemEtapa.Valor)
+
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="descDisable-Help">
+                                                                        <label>de @itemEtapa.EtapaCategoria.Etapa.DataInicioEtapa</label>
+                                                                    </div>
+                                                                    <div class="descDisable-Help">
+                                                                        <label>até @itemEtapa.EtapaCategoria.Etapa.DataFimEtapa</label>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+                                                    }
+
+                                                </div>
+                                                <div class="col-sm-4" style="border-left: 1px solid #ddd; height:100%; margin-bottom: 9px">
+                                                    <div class="col-sm-12">
+                                                        <p class="title-Help">
+                                                            Formações Permitidas
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-sm-12">
+                                                        @if (item.ListaFormacaoModalidades != null)
+                                                        {
+                                                            @foreach (var itemFormacao in item.ListaFormacaoModalidades)
+                                                            {
+
+                                                                <p class="descList-Help">• @itemFormacao.Formacao.DescFormacao</p>
+
+                                                            }
+                                                        }
+                                                    </div>
+
+                                                </div>
+                                                @if (VerificarPerfil.Validar("AdmSimposio/Basicos/ModalidadeAtualizar"))
+                                                {
+                                                    <a href="#" class="more_link" onclick="EditModalidade(@item.CodModalidade)">
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            @*<div class="table-responsive">
+                    <table class="table table-striped table-bordered" style="width:100%" id="tbModalidade">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Código
+                                </th>
+                                <th>
+                                    Título Categoria
+                                </th>
+                                <th>
+                                    Título Modalidade
+                                </th>
+                                <th>Opções</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                if (Model != null)
+                                {
+                                    foreach (var item in Model.Modalidades)
+                                    {
+                                        <tr id="linha" class="odd gradeX">
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.CodModalidade)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.categoria.DescCategoria)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.DescModalidade)
+                                            </td>
+                                            <td style="text-align:center">
+                                                <a href="#" onclick="EditModalidade(@item.CodModalidade)"><i class="fa fa-edit fa-fw fa-lg"></i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>*@
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="CriarEtapa" tabindex="-1" role="dialog" aria-labelledby="CriarEtapa" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Etapa - Novo</h4>
+            </div>
+            <div id="partialCriarEtapa"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalEditarEtapa" tabindex="-1" role="dialog" aria-labelledby="ModalEditarEtapa" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Etapa - Edição</h4>
+            </div>
+            <div id="partialEditarEtapa"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalCriarCategoria" tabindex="-1" role="dialog" aria-labelledby="ModalCriarCategoria" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Categoria - Novo</h4>
+            </div>
+            <div id="partialCriarCategoria"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalEditarCategoria" tabindex="-1" role="dialog" aria-labelledby="ModalEditarCategoria" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Categoria - Edição</h4>
+            </div>
+            <div id="partialEditarCategoria"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalCriarModalidade" tabindex="-1" role="dialog" aria-labelledby="ModalCriarModalidade" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Modalidade - Novo</h4>
+            </div>
+            <div id="partialCriarModalidade"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ModalEditarModalidade" tabindex="-1" role="dialog" aria-labelledby="ModalEditarModalidade" aria-hidden="true">
+    <div class="modal-dialog" role="document" style=" height: 60%">
+        <div class="modal-content">
+            <div style="color: white; background-color: #004077; font-weight:bold; border-top-left-radius:inherit; border-top-right-radius:inherit" class="modal-header">
+                <button type="button" class="close text" style="color:white !important; opacity:1" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Modalidade - Edição</h4>
+            </div>
+            <div id="partialEditarModalidade"></div>
+        </div>
+    </div>
+</div>
