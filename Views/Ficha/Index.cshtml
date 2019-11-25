@@ -1,0 +1,64 @@
+﻿@model CardFitness.Models.FichaExercicioVM
+@{
+    ViewBag.Title = "Ficha Atual";
+}
+
+<div style="margin-top: 20px">
+    <div class="pull-left">
+        <div>
+            <h4 style="display:inline; font-size: 24px; font-weight:bold ">
+                Treino:
+            </h4>
+            <h5>@Html.Label(Model.Ficha.Descricao)</h5>
+
+        </div>
+    </div>
+
+    <div class="pull-right">
+        <a asp-action="ControlarFicha" class="btn btn-primary">Cadastrar</a>
+    </div>
+</div>
+
+
+<table class="table table-hover pull-left" style="margin-top: 20px">
+
+    <tr>
+        <td>
+            @Html.Label("Exercício")
+        </td>
+        <td>
+            @Html.Label("Serie")
+        </td>
+        <td>
+            @Html.Label("Repeticões")
+        </td>
+        <td>
+            @Html.Label("Carga")
+        </td>
+    </tr>
+    @{ foreach (var item in Model.FichaExercicio)
+        {
+            <tr>
+                <td>
+                    @Html.Label(item.Exercicio.Descricao)
+                </td>
+                <td>
+                    @Html.Label(item.Serie.ToString())x
+                </td>
+                <td>
+                    @Html.Label(item.Repeticao)
+                </td>
+
+                <td>
+                    @Html.Label(item.Carga.ToString())
+                </td>
+            </tr>
+        }
+    }
+</table>
+@if (Model.Ficha.IDFicha > 0)
+{
+    <a href="@Url.Action("Executar", "Ficha", new { ID = Model.Ficha.IDFicha })" class="btn btn-primary" style="float:right">
+        Executado
+    </a>
+}

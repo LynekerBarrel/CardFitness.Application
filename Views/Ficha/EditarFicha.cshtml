@@ -1,0 +1,56 @@
+﻿@model CardFitness.Models.Ficha
+@{
+    ViewBag.Title = "Editar ficha";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    {@Html.ValidationSummary(true)
+    <fieldset>
+        @Html.HiddenFor(x=>x.IDFicha)
+        @Html.HiddenFor(x=>x.Status)
+        @Html.HiddenFor(x=>x.DataFinalizacao)
+        <div style="margin-top: 20px; font-size: 24px; font-weight:bold ">
+            Edição de ficha
+        </div>
+        <table style="margin-top: 20px">
+            <tr>
+                <td>
+                    <div class="editor-label">
+                        @Html.LabelFor(model => model.Descricao):
+                    </div>
+                </td>
+                <td>
+                    <div class="editor-field" style="margin-left: 5px">
+                        @Html.EditorFor(model => model.Descricao, new { htmlAttributes = new { @class = "form-control validar" } })
+                        @Html.ValidationMessageFor(model => model.Descricao)
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label" style="margin-top: 10px">
+                        <label class="control-label">Sequência do ficha:</label>
+                    </div>
+                </td>
+                <td>
+                    <div style="margin-top: 10px;margin-left: 5px">
+                        @Html.DropDownListFor(x => x.DiaSeq, (SelectList)ViewBag.ListaDiaSeq, new { @class = "form-control" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div style="margin-top: 10px">
+                        <input type="submit" value="Alterar" class="btn btn-primary btnSubmit" style="float:right" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+}
+}

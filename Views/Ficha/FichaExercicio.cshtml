@@ -1,0 +1,64 @@
+﻿@model CardFitness.Models.FichaExercicioVM
+@{
+    ViewBag.Title = "Exercícios da Ficha";
+}
+
+<div style="margin-top: 20px; font-size: 16px; font-weight:bold ">
+    Ficha: @Html.Label(Model.Ficha.Descricao)
+</div>
+
+
+<table class="table table-hover" style="margin-top:20px">
+
+    <tr>
+        <td>
+            @Html.Label("Exercicio")
+        </td>
+        <td>
+            @Html.Label("Serie")
+        </td>
+        <td>
+            @Html.Label("Repeticões")
+        </td>
+        <td>
+            @Html.Label("Carga")
+        </td>
+        <td>
+        </td>
+        <td>
+        </td>
+    </tr>
+    @{ foreach (var item in Model.FichaExercicio)
+        {
+            <tr>
+                <td>
+                    @item.Exercicio.Descricao
+                </td>
+                <td>
+                    @item.Serie.ToString()x
+                </td>
+                <td>
+                    @item.Repeticao
+                </td>
+
+                <td>
+                    @item.Carga.ToString()
+                </td>
+                <td>
+
+                    <a href="@Url.Action("EditarFichaExercicio", "Ficha", new { IDFicha = item.IDFicha })" class="btn btn-info">
+                        <i class="fa fa-edit"></i>
+                    </a>
+
+                    <a href="@Url.Action("DeletarFichaExercicio", "Ficha", new { IDFichaExercicio = item.IDFichaExercicio })" class="btn btn-warning">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    }
+</table>
+<a href="@Url.Action("VincularExercicio", "Ficha", new { ID = Model.Ficha.IDFicha })" class="btn btn-primary">
+    Cadastrar
+</a>
+@*<input type="button" value="Cadastrar" onclick="location.href='@Url.Action("CadExercicio", "Fichas")'" class="btn btn-primary" />*@
