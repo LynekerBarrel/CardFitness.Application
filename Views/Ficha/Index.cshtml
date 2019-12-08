@@ -1,4 +1,4 @@
-﻿@model CardFitness.Models.FichaExercicioVM
+﻿@model IEnumerable<CardFitness.Models.FichaExercicio>
 @{
     ViewBag.Title = "Ficha Atual";
 }
@@ -9,13 +9,16 @@
             <h4 style="display:inline; font-size: 24px; font-weight:bold ">
                 Treino:
             </h4>
-            <h5>@Html.Label(Model.Ficha.Descricao)</h5>
+            @if (Model != null && Model.Count() > 0)
+            {
+                <h5>@Html.Label(Model.First().Ficha.Descricao)</h5>
+            }
 
         </div>
     </div>
 
     <div class="pull-right">
-        <a asp-action="ControlarFicha" class="btn btn-primary">Cadastrar</a>
+        <a asp-action="ControlarFicha" class="btn btn-primary">Gerenciar Fichas</a>
     </div>
 </div>
 
@@ -36,29 +39,32 @@
             @Html.Label("Carga")
         </td>
     </tr>
-    @{ foreach (var item in Model.FichaExercicio)
+    @{ foreach (var item in Model)
         {
             <tr>
                 <td>
-                    @Html.Label(item.Exercicio.Descricao)
+                    @item.Exercicio.Descricao
                 </td>
                 <td>
-                    @Html.Label(item.Serie.ToString())x
+                    @item.Serie.ToString()x
                 </td>
                 <td>
-                    @Html.Label(item.Repeticao)
+                    @item.Repeticao
                 </td>
 
                 <td>
-                    @Html.Label(item.Carga.ToString())
+                    @String.Format("{0:0}",item.Carga)
                 </td>
             </tr>
         }
     }
 </table>
-@if (Model.Ficha.IDFicha > 0)
+@if (Model != null && Model.Count() > 0)
 {
-    <a href="@Url.Action("Executar", "Ficha", new { ID = Model.Ficha.IDFicha })" class="btn btn-primary" style="float:right">
-        Executado
-    </a>
+    @if (Model.First().Ficha.IDFicha > 0)
+    {
+        <a href="@Url.Action("Executado", "Ficha", new { IDFicha = Model.First().Ficha.IDFicha })" class="btn btn-success" style="float:right">
+            Finalizado
+        </a>
+    }
 }

@@ -13,13 +13,12 @@ namespace Application.Controllers
     {
         public async Task<IActionResult> Index()
         {
-            var Model = new FichaExercicioVM();
-            Model.Ficha = new Ficha();
-            Model.FichaExercicio = new List<FichaExercicio>();
-            var response = await HttpGeneric.Get(APIUrl.Url() + "Ficha/ListarCompletoAtivos");
+            var Model = new List<FichaExercicio>();
+            var response = await HttpGeneric.Get(APIUrl.Url() + "FilaFicha/ListarFila");
             if (response.Code == 200)
             {
-                Model.Ficha = JsonConvert.DeserializeObject<List<Ficha>>(response.Result.ToString());
+                Model = JsonConvert.DeserializeObject<List<FichaExercicio>>(response.Result.ToString());
+                Model = Model.OrderBy(x => x.Exercicio.Descricao).ToList();
             }
             return View(Model);
         }
@@ -47,7 +46,7 @@ namespace Application.Controllers
                 lFicha = JsonConvert.DeserializeObject<List<Ficha>>(response.Result.ToString());
             }
 
-            return sequenciaisPossiveis.Except(lFicha.Where(x=>x.IDFicha != IDFicha).Select(x => x.DiaSeq).ToList()).ToList();
+            return sequenciaisPossiveis.Except(lFicha.Where(x => x.IDFicha != IDFicha).Select(x => x.DiaSeq).ToList()).ToList();
         }
 
         [HttpGet]
@@ -141,6 +140,100 @@ namespace Application.Controllers
             }
 
             return Ficha;
+        }
+
+        public async Task<IActionResult> FichaExercicio(int IDFicha)
+        {
+            var Model = new FichaExercicioVM();
+            Model.Ficha = BuscarFichaPorId(IDFicha).Result;
+            Model.FichaExercicio = new List<FichaExercicio>();
+
+            var lModel = new List<Ficha>();
+            var response = await HttpGeneric.Post(APIUrl.Url() + "FichaExercicio/BuscaDinamicaRigida", BuscaDinamica.Add(new List<BuscaDinamica>(), "IDFicha", IDFicha, true));
+            if (response.Code == 200)
+            {
+                Model.FichaExercicio = JsonConvert.DeserializeObject<List<FichaExercicio>>(response.Result.ToString());
+                Model.FichaExercicio = Model.FichaExercicio.OrderBy(x => x.Exercicio.Descricao).ToList();
+            }
+            Model.FichaExercicio = Model.FichaExercicio.OrderBy(x => x.Exercicio.Descricao).ToList();
+            return View(Model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VincularExercicio(int IDFicha)
+        {
+            var Model = new FichaExercicio();
+            Model.Ficha = BuscarFichaPorId(IDFicha).Result;
+            Model.IDFicha = Model.Ficha.IDFicha;
+            Model.Exercicios = new List<Exercicio>();
+            var response = await HttpGeneric.Get(APIUrl.Url() + "Exercicio/ListarTodos");
+            if (response.Code == 200)
+            {
+                Model.Exercicios = JsonConvert.DeserializeObject<List<Exercicio>>(response.Result.ToString());
+            }
+            return View(Model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CadastrarFichaExercicio(FichaExercicio FichaExercicio)
+        {
+            var response = await HttpGeneric.Post(APIUrl.Url() + "FichaExercicio/Criar", FichaExercicio);
+            if (response.Code == 200)
+            {
+                TempData["Sucesso"] = response.Result;
+                return RedirectToAction("FichaExercicio", "Ficha", new { IDFicha = FichaExercicio.IDFicha });
+            }
+            else
+            {
+                TempData["Erro"] = response.Result;
+                return View(FichaExercicio);
+            }
+        }
+
+        public async Task<IActionResult> DeletarFichaExercicio(int IDFichaExercicio)
+        {
+            var FichaExercicio = new FichaExercicio();
+            var response = await HttpGeneric.Post(APIUrl.Url() + "FichaExercicio/BuscaDinamicaRigida", BuscaDinamica.Add(new List<BuscaDinamica>(), "IDFichaExercicio", IDFichaExercicio, true));
+            if (response.Code == 200)
+            {
+                List<FichaExercicio> lFichaExercicio = JsonConvert.DeserializeObject<List<FichaExercicio>>(response.Result.ToString());
+                FichaExercicio = lFichaExercicio.First();
+            }
+
+            response = await HttpGeneric.Delete(APIUrl.Url() + "FichaExercicio/Deletar?IDFichaExercicio=" + FichaExercicio.IDFichaExercicio);
+            if (response.Code == 200)
+            {
+                TempData["Sucesso"] = "Ficha foi desativada com sucesso!";
+                return RedirectToAction("FichaExercicio", "Ficha", new { IDFicha = FichaExercicio.IDFicha });
+            }
+            else
+            {
+                TempData["Erro"] = response.Result;
+                return View(FichaExercicio);
+            }
+        }
+
+        public async Task<IActionResult> Executado(int IDFicha)
+        {
+            var FilaFicha = new FilaFicha();
+            var response = await HttpGeneric.Post(APIUrl.Url() + "FilaFicha/BuscaDinamicaRigida", BuscaDinamica.Add(new List<BuscaDinamica>(), "IDFicha", IDFicha, true));
+            if (response.Code == 200)
+            {
+                List<FilaFicha> lFilaFicha = JsonConvert.DeserializeObject<List<FilaFicha>>(response.Result.ToString());
+                FilaFicha = lFilaFicha.First();
+            }
+
+            response = await HttpGeneric.Post(APIUrl.Url() + "FilaFicha/Executado", FilaFicha);
+            if (response.Code == 200)
+            {
+                TempData["Sucesso"] = response.Result;
+                return RedirectToAction("Index", "Ficha");
+            }
+            else
+            {
+                TempData["Erro"] = response.Result;
+                return View();
+            }
         }
     }
 }

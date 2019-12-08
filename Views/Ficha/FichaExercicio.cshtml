@@ -3,12 +3,25 @@
     ViewBag.Title = "Exercícios da Ficha";
 }
 
-<div style="margin-top: 20px; font-size: 16px; font-weight:bold ">
-    Ficha: @Html.Label(Model.Ficha.Descricao)
+<div style="margin-top: 20px">
+    <div class="pull-left">
+        <div>
+            <h4 style="display:inline; font-size: 24px; font-weight:bold ">
+                Exercícios associados a ficha: @Html.Label(Model.Ficha.Descricao)
+            </h4>
+        </div>
+    </div>
+    <div class="pull-right">
+
+        <a href="@Url.Action("VincularExercicio", "Ficha", new { IDFicha = Model.Ficha.IDFicha })" class="btn btn-primary">
+            Vincular Novo Exercício
+        </a>
+    </div>
 </div>
 
 
-<table class="table table-hover" style="margin-top:20px">
+
+<table class="table table-hover pull-left" style="margin-top:20px;">
 
     <tr>
         <td>
@@ -23,9 +36,8 @@
         <td>
             @Html.Label("Carga")
         </td>
-        <td>
-        </td>
-        <td>
+        <td  class="text-right">
+            @Html.Label("Opções")
         </td>
     </tr>
     @{ foreach (var item in Model.FichaExercicio)
@@ -42,15 +54,10 @@
                 </td>
 
                 <td>
-                    @item.Carga.ToString()
+                    @String.Format("{0:0}", item.Carga)
                 </td>
-                <td>
-
-                    <a href="@Url.Action("EditarFichaExercicio", "Ficha", new { IDFicha = item.IDFicha })" class="btn btn-info">
-                        <i class="fa fa-edit"></i>
-                    </a>
-
-                    <a href="@Url.Action("DeletarFichaExercicio", "Ficha", new { IDFichaExercicio = item.IDFichaExercicio })" class="btn btn-warning">
+                <td class="text-right">
+                    <a href="@Url.Action("DeletarFichaExercicio", "Ficha", new { IDFichaExercicio = item.IDFichaExercicio })" class="btn btn-danger" title="Remover esse exercício dessa ficha">
                         <i class="fa fa-times"></i>
                     </a>
                 </td>
@@ -58,7 +65,3 @@
         }
     }
 </table>
-<a href="@Url.Action("VincularExercicio", "Ficha", new { ID = Model.Ficha.IDFicha })" class="btn btn-primary">
-    Cadastrar
-</a>
-@*<input type="button" value="Cadastrar" onclick="location.href='@Url.Action("CadExercicio", "Fichas")'" class="btn btn-primary" />*@

@@ -1,0 +1,75 @@
+﻿@model CardFitness.Models.FichaExercicio
+@{
+    ViewBag.Title = "Cadastrar Ficha";
+}
+
+<form asp-action="CadastrarFichaExercicio">
+    @Html.AntiForgeryToken()
+    <fieldset>
+        @Html.HiddenFor(x => x.IDFicha)
+        <div style="margin-top: 20px; font-size: 24px; font-weight:bold ">
+            Vincule um exercício a ficha: @Html.Label(Model.Ficha.Descricao)
+        </div>
+        <table style="margin-top: 20px">
+            <tr>
+                <td colspan="2">
+                    <div class="editor-field form-group" style="margin-left: 5px">
+                        @Html.DropDownListFor(x => x.IDExercicio, new SelectList(Model.Exercicios, "IDExercicio", "Descricao"), "Selecione um exercício...", new { @class = "form-control" })
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label" style="margin-top: 10px">
+                        <label class="control-label">Série:</label>
+                    </div>
+                </td>
+
+                <td>
+                    <div style="margin-top: 10px;margin-left: 5px">
+                        @Html.EditorFor(model => model.Serie, new { htmlAttributes = new { @class = "form-control validar" } })
+                        @Html.ValidationMessageFor(model => model.Serie)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label" style="margin-top: 10px">
+                        <label class="control-label">Repetição:</label>
+                    </div>
+                </td>
+
+                <td>
+                    <div style="margin-top: 10px;margin-left: 5px">
+                        @Html.EditorFor(model => model.Repeticao, new { htmlAttributes = new { @class = "form-control validar" } })
+                        @Html.ValidationMessageFor(model => model.Repeticao)
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="editor-label" style="margin-top: 10px">
+                        <label class="control-label">Carga:</label>
+                    </div>
+                </td>
+
+                <td>
+                    <div style="margin-top: 10px;margin-left: 5px">
+                        @Html.EditorFor(model => model.Carga, new { htmlAttributes = new { @class = "form-control validar" } })
+                        @Html.ValidationMessageFor(model => model.Carga)
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td>
+                    <div style="margin-top: 10px">
+                        <input type="submit" value="Cadastrar" class="btn btn-primary btnSubmit" style="float:right" />
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+    </fieldset>
+</form>

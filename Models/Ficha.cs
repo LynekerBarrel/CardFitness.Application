@@ -14,4 +14,10 @@ namespace CardFitness.Models
         public int Status { get; set; }
         public int DiaSeq { get; set; }
     }
+    public class FilaFicha
+    {
+        public int IDFilaFicha { get; set; }
+        public int IDFicha { get; set; }
+        public int Executado { get; set; }
+    }
 }

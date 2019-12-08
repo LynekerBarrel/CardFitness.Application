@@ -15,6 +15,8 @@ namespace CardFitness.Models
         public int? IDExercicio { get; set; }
         public Exercicio Exercicio { get; set; }
 
+        public List<Exercicio> Exercicios { get; set; }
+
         public string Repeticao { get; set; }
         public int? Serie { get; set; }
         public decimal? Carga { get; set; }
